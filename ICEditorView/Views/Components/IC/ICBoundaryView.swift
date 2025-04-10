@@ -34,31 +34,50 @@ struct ICBoundaryView: View {
         var maxX: CGFloat = -.infinity
         var maxY: CGFloat = -.infinity
         
+        // 考慮旋轉角度的PAD邊界計算
         for pad in layoutManager.pads.values {
             // 取得PAD尺寸資訊
             let padWidth: CGFloat
             let padHeight: CGFloat
             
-            // 如果有關聯的PAD尺寸，則使用該尺寸
             if let dimensionID = pad.padDimensionID, let dimension = layoutManager.padDimensions[dimensionID] {
                 padWidth = CGFloat(dimension.width)
                 padHeight = CGFloat(dimension.height)
             } else {
-                // 若無關聯尺寸，使用預設值(可依需求調整)
                 padWidth = 50
                 padHeight = 30
             }
             
-            // 計算PAD的四邊界座標
-            let padLeft = CGFloat(pad.centerLocateX) - padWidth / 2
-            let padRight = CGFloat(pad.centerLocateX) + padWidth / 2
-            let padTop = CGFloat(pad.centerLocateY) - padHeight / 2
-            let padBottom = CGFloat(pad.centerLocateY) + padHeight / 2
+            // 計算PAD四個角的位置(考慮旋轉)
+            let center = CGPoint(x: CGFloat(pad.centerLocateX), y: CGFloat(pad.centerLocateY))
+            let halfWidth = padWidth / 2
+            let halfHeight = padHeight / 2
             
-            minX = min(minX, padLeft)
-            minY = min(minY, padTop)
-            maxX = max(maxX, padRight)
-            maxY = max(maxY, padBottom)
+            // 計算四個角落的點
+            let topLeft = CGPoint(x: center.x - halfWidth, y: center.y - halfHeight)
+            let topRight = CGPoint(x: center.x + halfWidth, y: center.y - halfHeight)
+            let bottomLeft = CGPoint(x: center.x - halfWidth, y: center.y + halfHeight)
+            let bottomRight = CGPoint(x: center.x + halfWidth, y: center.y + halfHeight)
+            
+            // 如果有旋轉角度，旋轉這些點
+            if pad.rotatedAngle != 0 {
+                let rotatedTL = rotatePoint(topLeft, around: center, angle: pad.rotatedAngle)
+                let rotatedTR = rotatePoint(topRight, around: center, angle: pad.rotatedAngle)
+                let rotatedBL = rotatePoint(bottomLeft, around: center, angle: pad.rotatedAngle)
+                let rotatedBR = rotatePoint(bottomRight, around: center, angle: pad.rotatedAngle)
+                
+                // 找出旋轉後的極值
+                minX = min(minX, rotatedTL.x, rotatedTR.x, rotatedBL.x, rotatedBR.x)
+                minY = min(minY, rotatedTL.y, rotatedTR.y, rotatedBL.y, rotatedBR.y)
+                maxX = max(maxX, rotatedTL.x, rotatedTR.x, rotatedBL.x, rotatedBR.x)
+                maxY = max(maxY, rotatedTL.y, rotatedTR.y, rotatedBL.y, rotatedBR.y)
+            } else {
+                // 不旋轉，直接找極值
+                minX = min(minX, center.x - halfWidth)
+                minY = min(minY, center.y - halfHeight)
+                maxX = max(maxX, center.x + halfWidth)
+                maxY = max(maxY, center.y + halfHeight)
+            }
         }
         
         // 添加額外的邊距
@@ -91,5 +110,20 @@ struct ICBoundaryView: View {
                 .frame(width: rect.width, height: rect.height)
                 .position(x: rect.midX, y: rect.midY)
         }
+    }
+    
+    // 輔助方法：旋轉點
+    private func rotatePoint(_ point: CGPoint, around center: CGPoint, angle: Double) -> CGPoint {
+        let dx = point.x - center.x
+        let dy = point.y - center.y
+        
+        let angleInRadians = angle * .pi / 180.0
+        let cosAngle = cos(angleInRadians)
+        let sinAngle = sin(angleInRadians)
+        
+        let rotatedX = center.x + dx * CGFloat(cosAngle) - dy * CGFloat(sinAngle)
+        let rotatedY = center.y + dx * CGFloat(sinAngle) + dy * CGFloat(cosAngle)
+        
+        return CGPoint(x: rotatedX, y: rotatedY)
     }
 }

@@ -395,7 +395,6 @@ struct ICLayoutViewModernized: View, UserModeViewProtocol {
                     .zIndex(-20) // 確保在最底層
             }
             
-            
             // 主要內容層
             contentLayer
                 .scaleEffect(gestureState.scale)
@@ -405,6 +404,18 @@ struct ICLayoutViewModernized: View, UserModeViewProtocol {
                 .onTapGesture { location in
                     handleContentTap(at: location)
                 }
+            
+            // 📝 添加IC黑色邊框
+            if viewState.showICBoundary {
+                ICBoundaryView(
+                    layoutManager: layoutManager,
+                    useFixedBoundary: viewState.useFixedICBoundary,
+                    fixedBoundarySize: viewState.fixedICSize
+                )
+                .scaleEffect(gestureState.scale)
+                .offset(gestureState.offset)
+                .zIndex(-10) // 設置為-10，確保在網格之上但在內容之下
+            }
             
             // 調試面板
             if showDebugInfo {
