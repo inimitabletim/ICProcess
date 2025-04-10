@@ -15,6 +15,10 @@ struct FloatingToolPanel: View {
     @State private var opacity: Double = 0.8
     
     let onAction: (ToolAction) -> Void
+    var parentGeometryProxy: GeometryProxy? // 新增
+    
+    // 📝 新增一個閉包型別的參數，用於接收約束函數
+    var constrainPosition: ((CGPoint, GeometryProxy) -> CGPoint)?
     
     // 定義工具操作
     enum ToolAction {
@@ -69,7 +73,14 @@ struct FloatingToolPanel: View {
                         x: position.x + value.translation.width - dragOffset.width,
                         y: position.y + value.translation.height - dragOffset.height
                     )
-                    position = newPosition
+                    // 使用 constrainPanelPosition 限制位置
+                    // ✅ 使用傳入的約束函數
+                    if let constrain = constrainPosition, let geometry = parentGeometryProxy {
+                        position = constrain(newPosition, geometry)
+                    } else {
+                        position = newPosition
+                    }
+                    
                     dragOffset = value.translation
                     
                     // 拖曳時提高不透明度
@@ -98,7 +109,7 @@ struct FloatingToolPanel: View {
             }
         }
     }
-    
+        
     // 收合狀態的簡化面板
     private var collapsedPanel: some View {
         HStack(spacing: 12) {

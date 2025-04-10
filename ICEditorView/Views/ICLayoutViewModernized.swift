@@ -29,8 +29,8 @@ struct ICLayoutViewModernized: View, UserModeViewProtocol {
     @State var feedbackMessage = ""
     @State var isMultiSelectMode: Bool = false
     @State var rightPanelExpanded: Bool = true
-    @State private var floatingToolPosition: CGPoint = CGPoint(x: 70, y: 300)
-    
+    @State private var floatingToolPosition: CGPoint = CGPoint(x: 0, y: 0)
+        
     // MARK: - 型別橋接層
     // 📝 增加一個型別代理，用於與期望 ToolType 的UI元件兼容
     @State private var toolTypeProxy: ICLayoutViewState.LayoutTool = .select
@@ -170,10 +170,16 @@ struct ICLayoutViewModernized: View, UserModeViewProtocol {
                         }
                         
                         // 懸浮工具面板
+                        // 懸浮工具面板 - 傳入約束函數
                         FloatingToolPanel(
                             position: $floatingToolPosition,
                             isExpanded: $floatingPanelExpanded,
-                            onAction: handleFloatingToolAction
+                            onAction: handleFloatingToolAction,
+                            parentGeometryProxy: geometry,
+                            constrainPosition: { pos, geo in
+                                // 調用本視圖中的約束函數
+                                self.constrainPanelPosition(pos, in: geo)
+                            }
                         )
                         .zIndex(25)
                     }
@@ -213,6 +219,28 @@ struct ICLayoutViewModernized: View, UserModeViewProtocol {
             .edgesIgnoringSafeArea(.all)
             .onAppear {
                 initializeViewState()
+                
+                // ✅ 設定浮動工具面板位置到中間底部但更往上
+                let bottomSafeArea = getBottomSafeAreaInset()
+                let additionalPadding: CGFloat = 30 // 增加至30以提高位置
+                let panelHeight: CGFloat = 100 // 估計的面板高度值增加
+
+                self.floatingToolPosition = CGPoint(
+                    x: geometry.size.width / 2,
+                    y: geometry.size.height - panelHeight - bottomSafeArea - additionalPadding
+                )
+            }
+            // 📝 處理屏幕旋轉或尺寸變化
+            .onChange(of: geometry.size) { oldSize,newSize in
+                // 重新調整位置
+                let bottomSafeArea = getBottomSafeAreaInset()
+                let additionalPadding: CGFloat = 30
+                let panelHeight: CGFloat = 100
+
+                self.floatingToolPosition = CGPoint(
+                    x: newSize.width / 2,
+                    y: newSize.height - panelHeight - bottomSafeArea - additionalPadding
+                )
             }
             .fileImporter(
                 isPresented: $isImportingCSV,
@@ -223,6 +251,45 @@ struct ICLayoutViewModernized: View, UserModeViewProtocol {
             }
         }
     }
+    
+    // MARK: - 獲取底部安全區域高度 (兼容iOS 15+)
+    private func getBottomSafeAreaInset() -> CGFloat {
+        // 兼容 iOS 15+ 的寫法
+        if #available(iOS 15.0, *) {
+            // 獲取當前的場景
+            guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                  let window = windowScene.windows.first else {
+                return 0
+            }
+            return window.safeAreaInsets.bottom
+        } else {
+            // iOS 15 之前的寫法
+            guard let window = UIApplication.shared.windows.first else {
+                return 0
+            }
+            return window.safeAreaInsets.bottom
+        }
+    }
+    
+    // MARK: - 確保面板不會被拖出螢幕範圍的輔助函數
+    private func constrainPanelPosition(_ position: CGPoint, in geometry: GeometryProxy) -> CGPoint {
+        // 估計面板的寬度與高度 (根據實際UI調整)
+        let estimatedPanelWidth: CGFloat = floatingPanelExpanded ? 200 : 140
+        let estimatedPanelHeight: CGFloat = floatingPanelExpanded ? 250 : 70
+        
+        // 計算安全邊界
+        let minX = estimatedPanelWidth / 2 + 20
+        let maxX = geometry.size.width - estimatedPanelWidth / 2 - 20
+        let minY = estimatedPanelHeight / 2 + 20
+        let maxY = geometry.size.height - estimatedPanelHeight / 2 - 20
+        
+        // 限制座標
+        let constrainedX = min(maxX, max(minX, position.x))
+        let constrainedY = min(maxY, max(minY, position.y))
+        
+        return CGPoint(x: constrainedX, y: constrainedY)
+    }
+
     
     // MARK: - 處理工具列操作
     private func handleToolbarAction(_ action: SimplifiedToolbar.ToolbarAction) {
