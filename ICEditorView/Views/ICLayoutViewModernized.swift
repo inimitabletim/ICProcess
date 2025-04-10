@@ -231,7 +231,7 @@ struct ICLayoutViewModernized: View, UserModeViewProtocol {
                 )
             }
             // 📝 處理屏幕旋轉或尺寸變化
-            .onChange(of: geometry.size) { oldSize,newSize in
+            .onChange(of: geometry.size) { newSize in
                 // 重新調整位置
                 let bottomSafeArea = getBottomSafeAreaInset()
                 let additionalPadding: CGFloat = 30

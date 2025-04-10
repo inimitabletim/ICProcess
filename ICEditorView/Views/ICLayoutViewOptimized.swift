@@ -40,108 +40,112 @@ struct ICLayoutViewOptimized: View, UserModeViewProtocol {
     // MARK: - 主視圖
     var body: some View {
         GeometryReader { geometry in
-            ZStack {
-                VStack(spacing: 0) {
-                    // 頂部導航欄
-                    companyTopBar
-                        .frame(height: 60)
-                    
-                    ZStack {
-                        // 背景
-                        Color(white: 0.95)
-                            .ignoresSafeArea()
+            if #available(iOS 17.0, *) {
+                ZStack {
+                    VStack(spacing: 0) {
+                        // 頂部導航欄
+                        companyTopBar
+                            .frame(height: 60)
                         
-                        // 主內容區域
                         ZStack {
-                            // 網格背景 (如果啟用)
-                            if viewState.showGrid {
-                                GridBackgroundView(viewSize: geometry.size)
+                            // 背景
+                            Color(white: 0.95)
+                                .ignoresSafeArea()
+                            
+                            // 主內容區域
+                            ZStack {
+                                // 網格背景 (如果啟用)
+                                if viewState.showGrid {
+                                    GridBackgroundView(viewSize: geometry.size)
+                                }
+                                
+                                // 內容層 - 優化後的手勢處理
+                                contentLayerWithSmartGestures(geometry: geometry)
                             }
                             
-                            // 內容層 - 優化後的手勢處理
-                            contentLayerWithSmartGestures(geometry: geometry)
-                        }
-                        
-                        // 操作反饋提示
-                        if showModeFeedback {
-                            feedbackToast
-                        }
-                        
-                        // 模式指示器
-                        VStack {
-                            modeIndicator
-                                .padding(.top, 10)
+                            // 操作反饋提示
+                            if showModeFeedback {
+                                feedbackToast
+                            }
                             
-                            Spacer()
-                        }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.leading, 20)
-                        
-                        // 調試面板 (可選)
-                        if showDebugInfo {
+                            // 模式指示器
                             VStack {
-                                GestureDiagnosticsView(gestureState: gestureState)
-                                    .padding(10)
+                                modeIndicator
+                                    .padding(.top, 10)
+                                
                                 Spacer()
                             }
-                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.leading, 20)
+                            
+                            // 調試面板 (可選)
+                            if showDebugInfo {
+                                VStack {
+                                    GestureDiagnosticsView(gestureState: gestureState)
+                                        .padding(10)
+                                    Spacer()
+                                }
+                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                            }
                         }
                     }
+                    
+                    //                // 右側工具面板
+                    //                VStack {
+                    //                    rightToolPanel
+                    //                        .padding(.top, 75)
+                    //                    Spacer()
+                    //                }
+                    //                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing)
+                    //                
+                    //                // 浮動控制區
+                    //                VStack {
+                    //                    Spacer()
+                    //                    HStack {
+                    //                        Spacer()
+                    //                        floatingControlArea
+                    //                    }
+                    //                }
+                    
+                    // 底部信息面板
+                    VStack {
+                        Spacer()
+                        bottomInfoPanel(geometry: geometry)
+                    }
                 }
-                
-//                // 右側工具面板
-//                VStack {
-//                    rightToolPanel
-//                        .padding(.top, 75)
-//                    Spacer()
-//                }
-//                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing)
-//                
-//                // 浮動控制區
-//                VStack {
-//                    Spacer()
-//                    HStack {
-//                        Spacer()
-//                        floatingControlArea
-//                    }
-//                }
-                
-                // 底部信息面板
-                VStack {
-                    Spacer()
-                    bottomInfoPanel(geometry: geometry)
+                .edgesIgnoringSafeArea(.bottom)
+                .onAppear {
+                    // 初始化視圖狀態
+                    initializeViewState()
+                    
+                    // 輸出初始化信息
+                    print("📱 視圖已初始化: 模式=\(viewState.selectedTool), 縮放=\(viewState.scale)")
+                    
+                    // 設置鍵盤修飾符檢測
+                    setupKeyModifierDetection()
                 }
-            }
-            .edgesIgnoringSafeArea(.bottom)
-            .onAppear {
-                // 初始化視圖狀態
-                initializeViewState()
-                
-                // 輸出初始化信息
-                print("📱 視圖已初始化: 模式=\(viewState.selectedTool), 縮放=\(viewState.scale)")
-                
-                // 設置鍵盤修飾符檢測
-                setupKeyModifierDetection()
-            }
-            // 同步狀態 - 使用 onChange API
-            .onChange(of: gestureState.scale) { _, newValue in
-                syncScaleToViewState(newValue)
-            }
-            .onChange(of: gestureState.offset) { _, newValue in
-                syncOffsetToViewState(newValue)
-            }
-            .onChange(of: viewState.scale) { _, newValue in
-                syncViewStateScaleToLocal(newValue)
-            }
-            .onChange(of: viewState.offset) { _, newValue in
-                syncViewStateOffsetToLocal(newValue)
-            }
-            // 當工具模式改變時，重置狀態
-            .onChange(of: viewState.selectedTool) { _, _ in
-                gestureState.resetGestureState()
-            }
-            .onChange(of: viewState.isEditMode) { _, _ in
-                gestureState.resetGestureState()
+                // 同步狀態 - 使用 onChange API
+                .onChange(of: gestureState.scale) { _, newValue in
+                    syncScaleToViewState(newValue)
+                }
+                .onChange(of: gestureState.offset) { _, newValue in
+                    syncOffsetToViewState(newValue)
+                }
+                .onChange(of: viewState.scale) { _, newValue in
+                    syncViewStateScaleToLocal(newValue)
+                }
+                .onChange(of: viewState.offset) { _, newValue in
+                    syncViewStateOffsetToLocal(newValue)
+                }
+                // 當工具模式改變時，重置狀態
+                .onChange(of: viewState.selectedTool) { _, _ in
+                    gestureState.resetGestureState()
+                }
+                .onChange(of: viewState.isEditMode) { _, _ in
+                    gestureState.resetGestureState()
+                }
+            } else {
+                // Fallback on earlier versions
             }
         }
     }
