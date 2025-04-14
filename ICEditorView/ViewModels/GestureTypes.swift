@@ -22,4 +22,5 @@ public struct GestureModifiers: OptionSet {
     public static let command = GestureModifiers(rawValue: 1 << 3)
     public static let rightClick = GestureModifiers(rawValue: 1 << 4)
     public static let multiTouch = GestureModifiers(rawValue: 1 << 5)
+    public static let space = GestureModifiers(rawValue: 1 << 6)
 }

@@ -95,9 +95,11 @@ class ICLayoutViewState: ObservableObject {
         lastOffset = .zero
     }
     
-    // 提供觸覺反饋
+    /// 提供觸覺反饋
     func performHapticFeedback(intensity: CGFloat = 0.5) {
-        impactGenerator.impactOccurred(intensity: intensity)
+        let generator = UIImpactFeedbackGenerator(style: .medium)
+        generator.prepare() // 預先準備，減少延遲
+        generator.impactOccurred(intensity: intensity)
     }
     
     // 移動視圖 (透過方向按鈕)

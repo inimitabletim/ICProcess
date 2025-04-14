@@ -46,18 +46,18 @@ struct ICLayoutViewModernized: View, UserModeViewProtocol {
     @State var importAlertIsSuccess = false
     
     // MARK: - 其他視圖狀態
-    @State private var showDebugInfo: Bool = false
+    @State var showDebugInfo: Bool = false
     @State var showingBoundarySettings: Bool = false
     @State var showingAssociationManager: Bool = false
     @State private var showingQuickAssociateConfirm: Bool = false
     @State private var showingQuickDissociateConfirm: Bool = false
     @State private var associationActionMessage: String = ""
     
-    @State private var showSidePanel: Bool = false
-    @State private var sidePanelTab: Int = 0
+    @State var showSidePanel: Bool = false
+    @State var sidePanelTab: Int = 0
     @State private var floatingPanelExpanded: Bool = false
-    @State private var showFileMenu: Bool = false
-    @State private var fileMenuPosition: CGPoint = .zero
+    @State var showFileMenu: Bool = false
+    @State var fileMenuPosition: CGPoint = .zero
     @State private var showViewOptionsMenu: Bool = false
     @State private var viewOptionsPosition: CGPoint = .zero
     
@@ -145,8 +145,8 @@ struct ICLayoutViewModernized: View, UserModeViewProtocol {
                     
                     // 主內容區域
                     ZStack {
-                        // 主要內容視圖
-                        contentArea(geometry: geometry)
+                        // 整合混合手勢系統的內容層
+                        integrateComponentDetails()
                         
                         // 右側可收合的工具面板 - 使用新的 ViewOptionsPanel
                         if showSidePanel {
@@ -218,7 +218,8 @@ struct ICLayoutViewModernized: View, UserModeViewProtocol {
             }
             .edgesIgnoringSafeArea(.all)
             .onAppear {
-                initializeViewState()
+                // 初始化混合手勢系統
+                initializeHybridGestureSystem()
                 
                 // ✅ 設定浮動工具面板位置到中間底部但更往上
                 let bottomSafeArea = getBottomSafeAreaInset()
@@ -290,57 +291,6 @@ struct ICLayoutViewModernized: View, UserModeViewProtocol {
         return CGPoint(x: constrainedX, y: constrainedY)
     }
 
-    
-    // MARK: - 處理工具列操作
-    private func handleToolbarAction(_ action: SimplifiedToolbar.ToolbarAction) {
-        switch action {
-        case .toggleEditMode:
-            viewState.isEditMode.toggle()
-            showFeedback(viewState.isEditMode ? "已進入編輯模式" : "已退出編輯模式", true)
-            
-        case .selectTool:
-            toolTypeProxy = .select
-            viewState.selectedTool = .select
-            showFeedback("已切換到選擇工具", true)
-            
-        case .panTool:
-            toolTypeProxy = .pan
-            viewState.selectedTool = .pan
-            showFeedback("已切換到平移工具", true)
-            
-        case .zoomTool:
-            toolTypeProxy = .zoom
-            viewState.selectedTool = .zoom
-            showFeedback("已切換到縮放工具", true)
-            
-        case .showFileMenu:
-            // 計算檔案選單位置
-            fileMenuPosition = CGPoint(x: 130, y: 130)
-            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                showFileMenu = true
-            }
-            
-        case .showViewOptions:
-            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                showSidePanel = true
-                sidePanelTab = 0 // 切換到「顯示」頁籤
-            }
-            
-        case .toggleExtendedTools:
-            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                showSidePanel.toggle()
-            }
-            
-        case .showAssociationManager:
-            showingAssociationManager = true
-            showFeedback("開啟關聯管理器", true)
-            
-        default:
-            // 處理其他操作...
-            break
-        }
-    }
-
     // MARK: - 處理檔案操作
     private func handleFileAction(_ action: FileMenuView.FileAction) {
         switch action {
@@ -367,41 +317,6 @@ struct ICLayoutViewModernized: View, UserModeViewProtocol {
             withAnimation {
                 showFileMenu = false
             }
-        }
-    }
-
-    // MARK: - 處理懸浮工具操作
-    private func handleFloatingToolAction(_ action: FloatingToolPanel.ToolAction) {
-        switch action {
-        case .zoomIn:
-            zoomIn()
-            
-        case .zoomOut:
-            zoomOut()
-            
-        case .resetView:
-            resetView()
-            
-        case .toggleGrid:
-            viewState.showGrid.toggle()
-            showFeedback(viewState.showGrid ? "顯示網格" : "隱藏網格", true)
-            
-        case .toggleLabels:
-            viewState.showLabels.toggle()
-            showFeedback(viewState.showLabels ? "顯示標籤" : "隱藏標籤", true)
-            
-        case .toggleConnections:
-            viewState.showConnections.toggle()
-            showFeedback(viewState.showConnections ? "顯示連線" : "隱藏連線", true)
-            
-        case .showSettings:
-            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                showSidePanel = true
-                sidePanelTab = 1 // 切換到「邊框」頁籤
-            }
-            
-        case .centerSelection:
-            centerOnSelection()
         }
     }
 
@@ -466,11 +381,12 @@ struct ICLayoutViewModernized: View, UserModeViewProtocol {
             contentLayer
                 .scaleEffect(gestureState.scale)
                 .offset(gestureState.offset)
-                .gesture(configureGestures())
                 .contentShape(Rectangle())
                 .onTapGesture { location in
                     handleContentTap(at: location)
                 }
+                .gesture(configureGestures())         
+
             
             // 📝 添加IC黑色邊框
             if viewState.showICBoundary {
@@ -501,7 +417,7 @@ struct ICLayoutViewModernized: View, UserModeViewProtocol {
     }
     
     // MARK: - 內容層
-    private var contentLayer: some View {
+    var contentLayer: some View {
         ZStack {
             // 繪製PAD
             ForEach(Array(layoutManager.pads.keys), id: \.self) { padID in

@@ -74,6 +74,11 @@
 		43D382EC2D93EF8F00B01210 /* AIPESD.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 43D382C72D93EF8F00B01210 /* AIPESD.xcdatamodeld */; };
 		43D382ED2D93EF8F00B01210 /* CHANGELOG.md in Resources */ = {isa = PBXBuildFile; fileRef = 43D382C92D93EF8F00B01210 /* CHANGELOG.md */; };
 		43D383032D93EFE200B01210 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 43D383022D93EFE200B01210 /* Assets.xcassets */; };
+		43DAFF6D2DA8B91900B4E0C8 /* ICLayoutViewModernized+GestureContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DAFF6C2DA8B91900B4E0C8 /* ICLayoutViewModernized+GestureContext.swift */; };
+		43DAFF6F2DA8BA4600B4E0C8 /* ICLayoutViewModernized+SmartGestures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DAFF6E2DA8BA4600B4E0C8 /* ICLayoutViewModernized+SmartGestures.swift */; };
+		43DAFF712DA8BABE00B4E0C8 /* ICLayoutViewModernized+FeedbackSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DAFF702DA8BABE00B4E0C8 /* ICLayoutViewModernized+FeedbackSystem.swift */; };
+		43DAFF732DA8BBF800B4E0C8 /* ICLayoutViewModernized+GestureIntegration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DAFF722DA8BBF800B4E0C8 /* ICLayoutViewModernized+GestureIntegration.swift */; };
+		43DAFF752DA8C59300B4E0C8 /* ICLayoutViewModernized+Implementation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DAFF742DA8C59300B4E0C8 /* ICLayoutViewModernized+Implementation.swift */; };
 		43FBB6392DA6598700D5DE4E /* SimplifiedToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43FBB6382DA6598700D5DE4E /* SimplifiedToolbar.swift */; };
 		43FBB63B2DA659E200D5DE4E /* ViewOptionsPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43FBB63A2DA659E200D5DE4E /* ViewOptionsPanel.swift */; };
 		43FBB6412DA67E9300D5DE4E /* ICBoundaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43FBB6402DA67E9300D5DE4E /* ICBoundaryView.swift */; };
@@ -167,6 +172,11 @@
 		43D382C82D93EF8F00B01210 /* AIPESD.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AIPESD.xcdatamodel; sourceTree = "<group>"; };
 		43D382C92D93EF8F00B01210 /* CHANGELOG.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG.md; sourceTree = "<group>"; };
 		43D383022D93EFE200B01210 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		43DAFF6C2DA8B91900B4E0C8 /* ICLayoutViewModernized+GestureContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICLayoutViewModernized+GestureContext.swift"; sourceTree = "<group>"; };
+		43DAFF6E2DA8BA4600B4E0C8 /* ICLayoutViewModernized+SmartGestures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICLayoutViewModernized+SmartGestures.swift"; sourceTree = "<group>"; };
+		43DAFF702DA8BABE00B4E0C8 /* ICLayoutViewModernized+FeedbackSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICLayoutViewModernized+FeedbackSystem.swift"; sourceTree = "<group>"; };
+		43DAFF722DA8BBF800B4E0C8 /* ICLayoutViewModernized+GestureIntegration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICLayoutViewModernized+GestureIntegration.swift"; sourceTree = "<group>"; };
+		43DAFF742DA8C59300B4E0C8 /* ICLayoutViewModernized+Implementation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICLayoutViewModernized+Implementation.swift"; sourceTree = "<group>"; };
 		43FBB6382DA6598700D5DE4E /* SimplifiedToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplifiedToolbar.swift; sourceTree = "<group>"; };
 		43FBB63A2DA659E200D5DE4E /* ViewOptionsPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewOptionsPanel.swift; sourceTree = "<group>"; };
 		43FBB6402DA67E9300D5DE4E /* ICBoundaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ICBoundaryView.swift; sourceTree = "<group>"; };
@@ -224,6 +234,11 @@
 			children = (
 				437B15C92DA62076000624E8 /* ICLayoutViewModernized+TypeConversion.swift */,
 				4359D5F12DA527FB00937F6F /* ICLayoutViewModernized+Gestures.swift */,
+				43DAFF6C2DA8B91900B4E0C8 /* ICLayoutViewModernized+GestureContext.swift */,
+				43DAFF722DA8BBF800B4E0C8 /* ICLayoutViewModernized+GestureIntegration.swift */,
+				43DAFF6E2DA8BA4600B4E0C8 /* ICLayoutViewModernized+SmartGestures.swift */,
+				43DAFF702DA8BABE00B4E0C8 /* ICLayoutViewModernized+FeedbackSystem.swift */,
+				43DAFF742DA8C59300B4E0C8 /* ICLayoutViewModernized+Implementation.swift */,
 				4359D5F32DA5283700937F6F /* ICLayoutViewModernized+Actions.swift */,
 				4359D5F52DA5285C00937F6F /* ICLayoutViewModernized+Helpers.swift */,
 			);
@@ -578,6 +593,7 @@
 				4359D5CC2DA525AE00937F6F /* ICBoundarySettingsView.swift in Sources */,
 				4359D5E82DA525AE00937F6F /* ModelIntegratedCircuit.swift in Sources */,
 				43D382992D93EDEE00B01210 /* Persistence.swift in Sources */,
+				43DAFF752DA8C59300B4E0C8 /* ICLayoutViewModernized+Implementation.swift in Sources */,
 				430F5BC32DA6026900D57FFE /* PADPreviewView.swift in Sources */,
 				4359D5D82DA525AE00937F6F /* DFICCellLibraryType.swift in Sources */,
 				43D382922D93EDED00B01210 /* ContentView.swift in Sources */,
@@ -588,8 +604,10 @@
 				43D382902D93EDED00B01210 /* ICEditorViewApp.swift in Sources */,
 				4359D5E52DA525AE00937F6F /* ModelICIOPinSetup.swift in Sources */,
 				4359D5CD2DA525AE00937F6F /* ICLayoutDebugView.swift in Sources */,
+				43DAFF712DA8BABE00B4E0C8 /* ICLayoutViewModernized+FeedbackSystem.swift in Sources */,
 				4359D5DA2DA525AE00937F6F /* DFKPILevel.swift in Sources */,
 				4359D5D92DA525AE00937F6F /* DFIOType.swift in Sources */,
+				43DAFF6F2DA8BA4600B4E0C8 /* ICLayoutViewModernized+SmartGestures.swift in Sources */,
 				4359D5E42DA525AE00937F6F /* ModelICIOPin.swift in Sources */,
 				430F5BC12DA6024500D57FFE /* DragPreviewManager.swift in Sources */,
 				43D382EC2D93EF8F00B01210 /* AIPESD.xcdatamodeld in Sources */,
@@ -611,9 +629,11 @@
 				437B15CC2DA64553000624E8 /* ToolType.swift in Sources */,
 				4359D5EE2DA525AE00937F6F /* ICLayoutViewState.swift in Sources */,
 				4359D5EC2DA525AE00937F6F /* Point.swift in Sources */,
+				43DAFF732DA8BBF800B4E0C8 /* ICLayoutViewModernized+GestureIntegration.swift in Sources */,
 				4359D5ED2DA525AE00937F6F /* GestureState.swift in Sources */,
 				4359D5FE2DA52A8400937F6F /* PADViewModernized.swift in Sources */,
 				4359D5FA2DA5292F00937F6F /* FloatingToolPanel.swift in Sources */,
+				43DAFF6D2DA8B91900B4E0C8 /* ICLayoutViewModernized+GestureContext.swift in Sources */,
 				4359D5D62DA525AE00937F6F /* CSVParser.swift in Sources */,
 				4359D5E02DA525AE00937F6F /* ICLayoutManager.swift in Sources */,
 				430F5BC52DA6028500D57FFE /* DragPreviewLayer.swift in Sources */,

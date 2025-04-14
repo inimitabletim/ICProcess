@@ -58,7 +58,7 @@ extension ICLayoutViewModernized {
         }
     }
     
-    private func toggleComponentSelection(_ componentID: UUID) {
+    func toggleComponentSelection(_ componentID: UUID) {
         if layoutManager.selectedComponents.contains(componentID) {
             layoutManager.deselectComponent(id: componentID)
         } else {
@@ -67,7 +67,7 @@ extension ICLayoutViewModernized {
         showFeedback("批量選擇: \(layoutManager.selectedComponents.count)個元件", true)
     }
     
-    private func selectSingleComponent(_ componentID: UUID) {
+    func selectSingleComponent(_ componentID: UUID) {
         layoutManager.clearSelection()
         layoutManager.selectComponent(id: componentID)
         
@@ -295,15 +295,18 @@ extension ICLayoutViewModernized {
     
     // 處理內容區域的點擊
     func handleContentTap(at location: CGPoint) {
+        print("➡️ 點擊處理：位置=\(location)")
+        
         // 記錄點擊位置
         gestureState.lastCursorX = location.x
         gestureState.lastCursorY = location.y
         
-        // 碰撞檢測：檢查是否點擊到元件
+        // 碰撞檢測
         if let componentID = hitTest(location) {
+            print("✅ 點擊到元件：\(componentID)")
             handleComponentTap(componentID)
         } else {
-            // 點擊空白處清除選擇
+            print("❌ 點擊空白處")
             layoutManager.clearSelection()
             showingComponentDetails = false
             selectedComponentID = nil

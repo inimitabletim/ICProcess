@@ -43,6 +43,8 @@ public class GestureState: ObservableObject {
     @Published var lastCursorX: CGFloat = 0
     @Published var lastCursorY: CGFloat = 0
     
+    @Published var isEditMode: Bool = false
+    
     // 手勢額外數據
     @Published var gestureModifiers: GestureModifiers = []
     

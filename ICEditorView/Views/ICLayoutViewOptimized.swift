@@ -632,9 +632,10 @@ struct ICLayoutViewOptimized: View, UserModeViewProtocol {
     }
     
     /// 檢測指定位置是否有元件 (碰撞檢測)
-    private func hitTest(_ location: CGPoint) -> UUID? {
+    func hitTest(_ location: CGPoint) -> UUID? {
         // 轉換到內容座標系
         let adjustedLocation = screenToContentCoordinate(screenPoint: location)
+        print("🔍 碰撞檢測：螢幕位置=\(location)，內容位置=\(adjustedLocation)")
         
         // 🔍 輸出調試信息
         print("碰撞檢測: 螢幕位置=\(location), 內容位置=\(adjustedLocation)")

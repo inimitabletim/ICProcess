@@ -26,9 +26,10 @@ extension ICLayoutViewModernized {
         setupKeyModifierDetection()
     }
     
+    /// 設置鍵盤修飾符檢測
     func setupKeyModifierDetection() {
         #if targetEnvironment(simulator)
-        // 在模擬器中可以監聽鍵盤修飾符，但需要根據實際環境調整
+        // 在模擬器中監聽鍵盤修飾符
         NotificationCenter.default.addObserver(forName: UIApplication.didBecomeActiveNotification, object: nil, queue: .main) { _ in
             // 每次應用激活時重置狀態
             self.isMultiSelectMode = false
@@ -39,6 +40,7 @@ extension ICLayoutViewModernized {
     
     // MARK: - 視圖操作
     
+    /// UserModeViewProtocol實現 - 保持與協議的兼容性
     func zoomIn() {
         withAnimation(.spring()) {
             gestureState.scale *= 1.2
@@ -234,6 +236,7 @@ extension ICLayoutViewModernized {
     
     // MARK: - 反饋與提示
     
+    /// 顯示操作反饋提示 - 簡化版
     func showFeedback(_ message: String, _ withHaptic: Bool) {
         feedbackMessage = message
         

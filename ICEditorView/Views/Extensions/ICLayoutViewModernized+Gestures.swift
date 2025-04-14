@@ -21,7 +21,22 @@ extension ICLayoutViewModernized {
     private func makeUnifiedGesture() -> some Gesture {
         // 組合所有需要的手勢，但根據當前模式決定哪些手勢生效
         
-        // 1. 拖曳手勢 - 處理選擇、拖曳元件和平移視圖
+        // 1. 點擊手勢（最高優先級）
+        let tapGesture = DragGesture(minimumDistance: 0, coordinateSpace: .local)
+            .onEnded { value in
+                // 如果移動距離很小，視為點擊
+                let dragDistance = sqrt(
+                    pow(value.translation.width, 2) +
+                    pow(value.translation.height, 2)
+                )
+                
+                if dragDistance < 3 {
+                    // 處理點擊事件
+                    self.handleContentTap(at: value.location)
+                }
+            }
+        
+        // 2. 拖曳手勢 - 處理選擇、拖曳元件和平移視圖
         let dragGesture = DragGesture(minimumDistance: 2)
             .onChanged { value in
                 // 獲取當前滑鼠/觸控位置
@@ -61,28 +76,11 @@ extension ICLayoutViewModernized {
                 }
             }
         
-        // 2. 縮放手勢 - 處理畫面縮放
+        // 3. 縮放手勢 - 處理畫面縮放
         let magnificationGesture = MagnificationGesture(minimumScaleDelta: 0.01)
             .onChanged { value in
-                // 根據當前工具模式決定縮放處理邏輯
-                switch self.viewState.selectedTool {
-                case .zoom:
-                    // 在縮放模式下，縮放是主要功能
-                    self.handleScaleChange(value, restrictRange: true)
-                case .select:
-                    // 在選擇模式下，只有未拖曳元件時才處理縮放
-                    if !self.gestureState.isDragging && !self.gestureState.isPanning {
-                        self.handleScaleChange(value, restrictRange: true)
-                    }
-                case .browse:
-                    // 在瀏覽模式下總是啟用縮放
-                    self.handleScaleChange(value, restrictRange: true)
-                default:
-                    // 在其他模式下，只有未拖曳元件時才處理縮放
-                    if !self.gestureState.isDragging {
-                        self.handleScaleChange(value, restrictRange: true)
-                    }
-                }
+                // 無條件啟用縮放功能
+                self.handleScaleChange(value, restrictRange: true)
             }
             .onEnded { _ in
                 if self.gestureState.isZooming {
@@ -92,7 +90,7 @@ extension ICLayoutViewModernized {
                 }
             }
         
-        // 3. 旋轉手勢 - 處理元件旋轉
+        // 4. 旋轉手勢 - 處理元件旋轉
         let rotationGesture = RotationGesture()
             .onChanged { angle in
                 // 只有在編輯模式且有選中元件時才處理旋轉
@@ -120,14 +118,19 @@ extension ICLayoutViewModernized {
         if !gestureState.isDragging && !gestureState.isPanning {
             // 先檢查是否點擊到元件
             if let componentID = hitTest(value.startLocation) {
-                // 開始拖曳元件
-                startComponentDrag(
-                    componentID: componentID,
-                    startLocation: value.startLocation,
-                    currentLocation: value.location
-                )
-                return
+                // 在編輯模式下才開始拖曳元件
+                if viewState.isEditMode {
+                    startComponentDrag(
+                        componentID: componentID,
+                        startLocation: value.startLocation,
+                        currentLocation: value.location
+                    )
+                    return
+                }
             }
+            
+            // 無論點擊到什麼，如果不是在編輯模式下拖曳元件，就啟動平移
+            startViewPan(startLocation: value.startLocation)
         }
         
         // 如果已經在拖曳元件
@@ -138,29 +141,38 @@ extension ICLayoutViewModernized {
             return
         }
         
-        // 如果不是拖曳元件，則平移視圖
-        if !gestureState.isPanning {
-            startViewPan(startLocation: value.startLocation)
+        // 更新平移位置
+        if gestureState.isPanning {
+            updateViewPan(translation: value.translation)
         }
-        
-        updateViewPan(translation: value.translation)
     }
-    
+
     /// 處理選擇模式下的拖曳結束
     private func handleSelectionDragEnd(_ value: DragGesture.Value) {
-        if gestureState.isPanning {
-            finalizeViewPan()
-            
-            // 如果平移距離很小，可能是點擊事件
-            let distance = sqrt(pow(value.translation.width, 2) + pow(value.translation.height, 2))
-            if distance < 5 {
-                // 處理點擊事件
-                handleTapAtLocation(value.location)
-            }
-        }
+        // 計算移動距離
+        let distance = sqrt(pow(value.translation.width, 2) + pow(value.translation.height, 2))
         
-        if gestureState.isDragging {
-            finalizeComponentDrag()
+        // 如果移動距離很小，可能是點擊事件
+        if distance < 5 {
+            // 檢查是否點擊到元件
+            if let componentID = hitTest(value.location) {
+                handleComponentTap(componentID)
+            } else {
+                // 點擊空白區域，清除選擇
+                layoutManager.clearSelection()
+                showingComponentDetails = false
+                selectedComponentID = nil
+                showFeedback("清除選擇", false)
+            }
+        } else {
+            // 正常處理結束拖曳/平移
+            if gestureState.isPanning {
+                finalizeViewPan()
+            }
+            
+            if gestureState.isDragging {
+                finalizeComponentDrag()
+            }
         }
     }
     
@@ -518,7 +530,7 @@ extension ICLayoutViewModernized {
     }
     
     /// 提供觸覺反饋
-    private func performHapticFeedback(intensity: CGFloat) {
+    func performHapticFeedback(intensity: CGFloat) {
         let generator = UIImpactFeedbackGenerator(style: .medium)
         generator.impactOccurred(intensity: intensity)
     }
