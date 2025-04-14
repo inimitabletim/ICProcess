@@ -310,7 +310,7 @@ extension ICLayoutViewModernized {
     }
     
     /// 啟動元件拖曳
-    private func startComponentDrag(componentID: UUID, startLocation: CGPoint, currentLocation: CGPoint) {
+    func startComponentDrag(componentID: UUID, startLocation: CGPoint, currentLocation: CGPoint) {
         gestureState.isDragging = true
         gestureState.draggedComponentID = componentID
         gestureState.dragStartLocation = startLocation
@@ -378,7 +378,7 @@ extension ICLayoutViewModernized {
     }
     
     /// 完成元件拖曳
-    private func finalizeComponentDrag() {
+    func finalizeComponentDrag() {
         if dragPreviewManager.previewEnabled {
             // 使用預覽模式
             finalizeDragPreview()
@@ -401,12 +401,17 @@ extension ICLayoutViewModernized {
     }
     
     /// 啟動視圖平移
-    private func startViewPan(startLocation: CGPoint) {
+    func startViewPan(startLocation: CGPoint) {
         gestureState.isPanning = true
         gestureState.panStartLocation = startLocation
         
         // 提供輕微觸覺反饋
         performHapticFeedback(intensity: 0.2)
+        
+        // 調試輸出
+        if showDebugInfo {
+            print("🔄 開始平移畫面")
+        }
     }
     
     /// 更新視圖平移
@@ -420,14 +425,14 @@ extension ICLayoutViewModernized {
     }
     
     /// 完成視圖平移
-    private func finalizeViewPan() {
+    func finalizeViewPan() {
         gestureState.lastOffset = gestureState.offset
         gestureState.isPanning = false
         gestureState.panStartLocation = nil
     }
     
     /// 啟動元件旋轉
-    private func startComponentRotation(initialAngle: Angle) {
+    func startComponentRotation(initialAngle: Angle) {
         gestureState.isRotating = true
         gestureState.rotationStartAngle = initialAngle
         gestureState.componentsStartRotations.removeAll()
@@ -445,7 +450,7 @@ extension ICLayoutViewModernized {
     }
     
     /// 應用元件旋轉
-    private func applyComponentRotation(to padID: UUID, delta: Angle) {
+    func applyComponentRotation(to padID: UUID, delta: Angle) {
         if let startRotation = gestureState.componentsStartRotations[padID],
            var pad = layoutManager.pads[padID] {
             // 計算新的旋轉角度 (轉換為度數)
@@ -458,7 +463,7 @@ extension ICLayoutViewModernized {
     }
     
     /// 完成旋轉操作
-    private func finalizeRotation() {
+    func finalizeRotation() {
         if gestureState.isRotating {
             gestureState.isRotating = false
             gestureState.rotationStartAngle = .zero
@@ -473,61 +478,61 @@ extension ICLayoutViewModernized {
         }
     }
     
-    /// 更新批量元件位置
-    private func updateBatchComponentPositions() {
-        if let startLocation = gestureState.dragStartLocation {
-            let currentLocation = gestureState.dragCurrentLocation ?? startLocation
-            
-            // 轉換座標系並計算移動差值
-            let startContentPoint = screenToContentCoordinate(screenPoint: startLocation)
-            let currentContentPoint = screenToContentCoordinate(screenPoint: currentLocation)
-            
-            let contentDelta = CGSize(
-                width: currentContentPoint.x - startContentPoint.x,
-                height: currentContentPoint.y - startContentPoint.y
-            )
-            
-            // 移動所有選中的元件
-            for componentID in layoutManager.selectedComponents {
-                if let startPosition = gestureState.componentsStartPositions[componentID] {
-                    movePADToPosition(
-                        padID: componentID,
-                        newPosition: CGPoint(
-                            x: startPosition.x + contentDelta.width,
-                            y: startPosition.y + contentDelta.height
-                        )
-                    )
-                }
-            }
-        }
-    }
+//    /// 更新批量元件位置
+//    private func updateBatchComponentPositions() {
+//        if let startLocation = gestureState.dragStartLocation {
+//            let currentLocation = gestureState.dragCurrentLocation ?? startLocation
+//            
+//            // 轉換座標系並計算移動差值
+//            let startContentPoint = screenToContentCoordinate(screenPoint: startLocation)
+//            let currentContentPoint = screenToContentCoordinate(screenPoint: currentLocation)
+//            
+//            let contentDelta = CGSize(
+//                width: currentContentPoint.x - startContentPoint.x,
+//                height: currentContentPoint.y - startContentPoint.y
+//            )
+//            
+//            // 移動所有選中的元件
+//            for componentID in layoutManager.selectedComponents {
+//                if let startPosition = gestureState.componentsStartPositions[componentID] {
+//                    movePADToPosition(
+//                        padID: componentID,
+//                        newPosition: CGPoint(
+//                            x: startPosition.x + contentDelta.width,
+//                            y: startPosition.y + contentDelta.height
+//                        )
+//                    )
+//                }
+//            }
+//        }
+//    }
     
-    /// 更新單個元件位置
-    private func updateSingleComponentPosition(componentID: UUID) {
-        if let startLocation = gestureState.dragStartLocation {
-            let currentLocation = gestureState.dragCurrentLocation ?? startLocation
-            
-            // 轉換座標系並計算移動差值
-            let startContentPoint = screenToContentCoordinate(screenPoint: startLocation)
-            let currentContentPoint = screenToContentCoordinate(screenPoint: currentLocation)
-            
-            let contentDelta = CGSize(
-                width: currentContentPoint.x - startContentPoint.x,
-                height: currentContentPoint.y - startContentPoint.y
-            )
-            
-            // 使用初始位置加上移動距離
-            if let startPosition = gestureState.dragStartComponentPosition {
-                movePADToPosition(
-                    padID: componentID,
-                    newPosition: CGPoint(
-                        x: startPosition.x + contentDelta.width,
-                        y: startPosition.y + contentDelta.height
-                    )
-                )
-            }
-        }
-    }
+//    /// 更新單個元件位置
+//    private func updateSingleComponentPosition(componentID: UUID) {
+//        if let startLocation = gestureState.dragStartLocation {
+//            let currentLocation = gestureState.dragCurrentLocation ?? startLocation
+//            
+//            // 轉換座標系並計算移動差值
+//            let startContentPoint = screenToContentCoordinate(screenPoint: startLocation)
+//            let currentContentPoint = screenToContentCoordinate(screenPoint: currentLocation)
+//            
+//            let contentDelta = CGSize(
+//                width: currentContentPoint.x - startContentPoint.x,
+//                height: currentContentPoint.y - startContentPoint.y
+//            )
+//            
+//            // 使用初始位置加上移動距離
+//            if let startPosition = gestureState.dragStartComponentPosition {
+//                movePADToPosition(
+//                    padID: componentID,
+//                    newPosition: CGPoint(
+//                        x: startPosition.x + contentDelta.width,
+//                        y: startPosition.y + contentDelta.height
+//                    )
+//                )
+//            }
+//        }
+//    }
     
     /// 提供觸覺反饋
     func performHapticFeedback(intensity: CGFloat) {

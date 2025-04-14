@@ -64,6 +64,9 @@
 		437B15CA2DA62076000624E8 /* ICLayoutViewModernized+TypeConversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437B15C92DA62076000624E8 /* ICLayoutViewModernized+TypeConversion.swift */; };
 		437B15CC2DA64553000624E8 /* ToolType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437B15CB2DA64553000624E8 /* ToolType.swift */; };
 		437B15D82DA65579000624E8 /* GridBackgroundModernized.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437B15D72DA65579000624E8 /* GridBackgroundModernized.swift */; };
+		43B4D6212DACB28800B82BBE /* ICLayoutViewModernized+UnifiedGestures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43B4D6202DACB28800B82BBE /* ICLayoutViewModernized+UnifiedGestures.swift */; };
+		43B4D6232DACB8A600B82BBE /* ICLayoutViewModernized+ImprovedHitTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43B4D6222DACB8A600B82BBE /* ICLayoutViewModernized+ImprovedHitTesting.swift */; };
+		43B4D6252DACB90900B82BBE /* ICLayoutViewModernized+ClickHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43B4D6242DACB90900B82BBE /* ICLayoutViewModernized+ClickHandling.swift */; };
 		43D382902D93EDED00B01210 /* ICEditorViewApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D3828F2D93EDED00B01210 /* ICEditorViewApp.swift */; };
 		43D382922D93EDED00B01210 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D382912D93EDED00B01210 /* ContentView.swift */; };
 		43D382972D93EDEE00B01210 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 43D382962D93EDEE00B01210 /* Preview Assets.xcassets */; };
@@ -159,6 +162,9 @@
 		437B15C92DA62076000624E8 /* ICLayoutViewModernized+TypeConversion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICLayoutViewModernized+TypeConversion.swift"; sourceTree = "<group>"; };
 		437B15CB2DA64553000624E8 /* ToolType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolType.swift; sourceTree = "<group>"; };
 		437B15D72DA65579000624E8 /* GridBackgroundModernized.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GridBackgroundModernized.swift; sourceTree = "<group>"; };
+		43B4D6202DACB28800B82BBE /* ICLayoutViewModernized+UnifiedGestures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICLayoutViewModernized+UnifiedGestures.swift"; sourceTree = "<group>"; };
+		43B4D6222DACB8A600B82BBE /* ICLayoutViewModernized+ImprovedHitTesting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICLayoutViewModernized+ImprovedHitTesting.swift"; sourceTree = "<group>"; };
+		43B4D6242DACB90900B82BBE /* ICLayoutViewModernized+ClickHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ICLayoutViewModernized+ClickHandling.swift"; sourceTree = "<group>"; };
 		43D3828C2D93EDED00B01210 /* ICEditorView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ICEditorView.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		43D3828F2D93EDED00B01210 /* ICEditorViewApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ICEditorViewApp.swift; sourceTree = "<group>"; };
 		43D382912D93EDED00B01210 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -236,9 +242,12 @@
 				4359D5F12DA527FB00937F6F /* ICLayoutViewModernized+Gestures.swift */,
 				43DAFF6C2DA8B91900B4E0C8 /* ICLayoutViewModernized+GestureContext.swift */,
 				43DAFF722DA8BBF800B4E0C8 /* ICLayoutViewModernized+GestureIntegration.swift */,
+				43B4D6202DACB28800B82BBE /* ICLayoutViewModernized+UnifiedGestures.swift */,
 				43DAFF6E2DA8BA4600B4E0C8 /* ICLayoutViewModernized+SmartGestures.swift */,
 				43DAFF702DA8BABE00B4E0C8 /* ICLayoutViewModernized+FeedbackSystem.swift */,
 				43DAFF742DA8C59300B4E0C8 /* ICLayoutViewModernized+Implementation.swift */,
+				43B4D6222DACB8A600B82BBE /* ICLayoutViewModernized+ImprovedHitTesting.swift */,
+				43B4D6242DACB90900B82BBE /* ICLayoutViewModernized+ClickHandling.swift */,
 				4359D5F32DA5283700937F6F /* ICLayoutViewModernized+Actions.swift */,
 				4359D5F52DA5285C00937F6F /* ICLayoutViewModernized+Helpers.swift */,
 			);
@@ -607,6 +616,7 @@
 				43DAFF712DA8BABE00B4E0C8 /* ICLayoutViewModernized+FeedbackSystem.swift in Sources */,
 				4359D5DA2DA525AE00937F6F /* DFKPILevel.swift in Sources */,
 				4359D5D92DA525AE00937F6F /* DFIOType.swift in Sources */,
+				43B4D6252DACB90900B82BBE /* ICLayoutViewModernized+ClickHandling.swift in Sources */,
 				43DAFF6F2DA8BA4600B4E0C8 /* ICLayoutViewModernized+SmartGestures.swift in Sources */,
 				4359D5E42DA525AE00937F6F /* ModelICIOPin.swift in Sources */,
 				430F5BC12DA6024500D57FFE /* DragPreviewManager.swift in Sources */,
@@ -626,6 +636,7 @@
 				4359D5E92DA525AE00937F6F /* ModelPAD.swift in Sources */,
 				4359D5E62DA525AE00937F6F /* ModelICPGCell.swift in Sources */,
 				43FBB63B2DA659E200D5DE4E /* ViewOptionsPanel.swift in Sources */,
+				43B4D6232DACB8A600B82BBE /* ICLayoutViewModernized+ImprovedHitTesting.swift in Sources */,
 				437B15CC2DA64553000624E8 /* ToolType.swift in Sources */,
 				4359D5EE2DA525AE00937F6F /* ICLayoutViewState.swift in Sources */,
 				4359D5EC2DA525AE00937F6F /* Point.swift in Sources */,
@@ -650,6 +661,7 @@
 				4359D5F62DA5285C00937F6F /* ICLayoutViewModernized+Helpers.swift in Sources */,
 				4359D6002DA52ABF00937F6F /* FeedbackToast.swift in Sources */,
 				4359D5E22DA525AE00937F6F /* ModelICInnerPAD.swift in Sources */,
+				43B4D6212DACB28800B82BBE /* ICLayoutViewModernized+UnifiedGestures.swift in Sources */,
 				4359D5CB2DA525AE00937F6F /* PinToPADAssociationView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

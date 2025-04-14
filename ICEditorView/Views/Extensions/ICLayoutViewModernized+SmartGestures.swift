@@ -437,7 +437,7 @@ extension ICLayoutViewModernized {
     // MARK: - 批量操作輔助方法
     
     /// 更新批量元件位置
-    private func updateBatchComponentPositions() {
+    func updateBatchComponentPositions() {
         if let startLocation = gestureState.dragStartLocation {
             let currentLocation = gestureState.dragCurrentLocation ?? startLocation
             
@@ -466,7 +466,7 @@ extension ICLayoutViewModernized {
     }
     
     /// 更新單個元件位置
-    private func updateSingleComponentPosition(componentID: UUID) {
+    func updateSingleComponentPosition(componentID: UUID) {
         if let startLocation = gestureState.dragStartLocation {
             let currentLocation = gestureState.dragCurrentLocation ?? startLocation
             

@@ -5,11 +5,6 @@
 //  Created by TimChi on 2025/4/1.
 //
 
-//
-//  ICLayoutViewModernized.swift
-//  ICEditorView
-//
-
 import SwiftUI
 import Combine
 
@@ -367,54 +362,6 @@ struct ICLayoutViewModernized: View, UserModeViewProtocol {
         }
     }
     
-    // MARK: - 內容區域
-    private func contentArea(geometry: GeometryProxy) -> some View {
-        ZStack {
-            // 背景網格（如果啟用）
-            if viewState.showGrid {
-                GridBackgroundModernized()
-                    .opacity(0.15)
-                    .zIndex(-20) // 確保在最底層
-            }
-            
-            // 主要內容層
-            contentLayer
-                .scaleEffect(gestureState.scale)
-                .offset(gestureState.offset)
-                .contentShape(Rectangle())
-                .onTapGesture { location in
-                    handleContentTap(at: location)
-                }
-                .gesture(configureGestures())         
-
-            
-            // 📝 添加IC黑色邊框
-            if viewState.showICBoundary {
-                ICBoundaryView(
-                    layoutManager: layoutManager,
-                    useFixedBoundary: viewState.useFixedICBoundary,
-                    fixedBoundarySize: viewState.fixedICSize
-                )
-                .scaleEffect(gestureState.scale)
-                .offset(gestureState.offset)
-                .zIndex(-10) // 設置為-10，確保在網格之上但在內容之下
-            }
-            
-            // 調試面板
-            if showDebugInfo {
-                VStack {
-                    Text("Scale: \(String(format: "%.2f", gestureState.scale))")
-                    Text("Offset: (\(Int(gestureState.offset.width)), \(Int(gestureState.offset.height)))")
-                    Text("Selected: \(layoutManager.selectedComponents.count)")
-                }
-                .padding()
-                .background(Color(UIColor.systemBackground).opacity(0.8))
-                .cornerRadius(10)
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
-                .padding()
-            }
-        }
-    }
     
     // MARK: - 內容層
     var contentLayer: some View {
