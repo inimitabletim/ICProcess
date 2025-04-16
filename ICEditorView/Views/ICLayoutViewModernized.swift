@@ -56,6 +56,8 @@ struct ICLayoutViewModernized: View, UserModeViewProtocol {
     @State private var showViewOptionsMenu: Bool = false
     @State private var viewOptionsPosition: CGPoint = .zero
     
+    @State var currentPositionText: String = "X: -, Y: -"
+    
     // MARK: - 環境屬性
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.colorScheme) private var colorScheme
@@ -164,7 +166,6 @@ struct ICLayoutViewModernized: View, UserModeViewProtocol {
                                 .zIndex(30)
                         }
                         
-                        // 懸浮工具面板
                         // 懸浮工具面板 - 傳入約束函數
                         FloatingToolPanel(
                             position: $floatingToolPosition,
@@ -181,14 +182,27 @@ struct ICLayoutViewModernized: View, UserModeViewProtocol {
                     
                     // 簡化的底部信息欄 - 僅保留必要信息
                     HStack {
-                        // 左側：選中計數
-                        HStack(spacing: 8) {
-                            Image(systemName: "checkmark.circle.fill")
-                                .font(.system(size: 12))
-                                .foregroundColor(.orange)
+                        // 左側：選中計數和當前座標
+                        HStack(spacing: 16) {
+                            // 選中計數
+                            HStack(spacing: 8) {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .font(.system(size: 12))
+                                    .foregroundColor(.orange)
+                                
+                                Text("已選: \(layoutManager.selectedComponents.count)")
+                                    .font(.system(size: 14, weight: .medium))
+                            }
                             
-                            Text("已選: \(layoutManager.selectedComponents.count)")
-                                .font(.system(size: 14, weight: .medium))
+                            // 當前座標
+                            HStack(spacing: 8) {
+                                Image(systemName: "location")
+                                    .font(.system(size: 12))
+                                    .foregroundColor(.blue)
+                                
+                                Text(currentPositionText)
+                                    .font(.system(size: 14, weight: .medium))
+                            }
                         }
                         .padding(.leading, 16)
                         
@@ -225,6 +239,13 @@ struct ICLayoutViewModernized: View, UserModeViewProtocol {
                     x: geometry.size.width / 2,
                     y: geometry.size.height - panelHeight - bottomSafeArea - additionalPadding
                 )
+                
+                // 新增：訂閱拖曳座標更新
+                dragPreviewManager.positionPublisher
+                    .sink { [self] position in
+                        self.currentPositionText = "X: \(Int(position.x)), Y: \(Int(position.y))"
+                    }
+                    .store(in: &SubscriptionManager.shared.subscriptions)
             }
             // 📝 處理屏幕旋轉或尺寸變化
             .onChange(of: geometry.size) { newSize in
@@ -375,6 +396,8 @@ struct ICLayoutViewModernized: View, UserModeViewProtocol {
                         isSelected: layoutManager.selectedComponents.contains(padID),
                         showLabel: viewState.showLabels
                     )
+                    .environmentObject(viewState)    // 傳遞viewState
+                    .environmentObject(layoutManager) // 傳遞layoutManager
                 }
             }
             
@@ -644,6 +667,19 @@ struct ICLayoutViewModernized: View, UserModeViewProtocol {
                 }
             }
         }
+    }
+    
+    /// 旋轉完成後顯示反饋
+    func showRotationFeedback(angle: Double) {
+        showFeedback("已旋轉至 \(Int(angle))°", true)
+    }
+
+    
+    /// 提供不同強度的觸覺反饋
+    func performHapticFeedback(style: UIImpactFeedbackGenerator.FeedbackStyle = .medium, intensity: CGFloat = 0.5) {
+        let generator = UIImpactFeedbackGenerator(style: style)
+        generator.prepare() // 預先準備，減少延遲
+        generator.impactOccurred(intensity: intensity)
     }
     
     // MARK: - UserModeViewProtocol 實現

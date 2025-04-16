@@ -173,6 +173,12 @@ extension ICLayoutViewModernized {
     
     /// 處理意圖轉換策略 - 處理用戶意圖變化
     func handleIntentTransition(previousIntent: UserIntent?, newIntent: UserIntent) -> UserIntent {
+        
+        // 確保旋轉意圖不會被觸發
+        if newIntent == .rotateComponent {
+            return .panCanvas  // 轉為平移或其他適當的操作
+        }
+        
         // 如果沒有先前意圖，直接使用新意圖
         guard let previousIntent = previousIntent else {
             return newIntent

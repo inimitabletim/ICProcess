@@ -12,49 +12,77 @@ extension ICLayoutViewModernized {
     
     /// 統一手勢系統 - 整合所有手勢處理邏輯
     func configureUnifiedGestures() -> some Gesture {
-        // 1. 拖曳手勢 (專注於拖曳而非點擊)
-        let dragGesture = DragGesture(minimumDistance: 5)
+        // 輔助手勢：更新觸控位置供 TapGesture 使用
+        let positionTrackingGesture = DragGesture(minimumDistance: 0)
             .onChanged { value in
-                // 更新游標位置
+                gestureState.lastCursorX = value.location.x
+                gestureState.lastCursorY = value.location.y
+            }
+            .onEnded { _ in }
+
+        // Tap 手勢：純點擊（利用先前儲存的觸控位置）
+        let tapGesture = TapGesture()
+            .onEnded {
+                let tapPoint = CGPoint(x: gestureState.lastCursorX, y: gestureState.lastCursorY)
+                if let componentID = self.hitTest(tapPoint) {
+                    self.handleComponentTap(componentID)
+                } else {
+                    self.layoutManager.clearSelection()
+                    self.showingComponentDetails = false
+                    self.selectedComponentID = nil
+                    self.showFeedback("清除選擇", false)
+                }
+            }
+        
+        // 拖曳手勢：處理拖曳／平移邏輯，minimumDistance 設為 2 以避免輕點誤判
+        let dragGesture = DragGesture(minimumDistance: 2)
+            .onChanged { value in
                 gestureState.lastCursorX = value.location.x
                 gestureState.lastCursorY = value.location.y
                 
-                // 如果已經在拖曳元件，繼續處理拖曳
                 if gestureState.isDragging {
-                    handleOngoingDrag(value)
+                    self.handleOngoingDrag(value)
                     return
                 }
-                
-                // 如果已經在平移，繼續處理平移
                 if gestureState.isPanning {
-                    handleOngoingPan(value)
+                    self.handleOngoingPan(value)
                     return
                 }
                 
-                // 首次處理 - 檢查是否點擊到元件
-                let componentID = hitTest(value.startLocation)
-                
-                if let componentID = componentID, viewState.isEditMode {
-                    // 在編輯模式下點擊到元件，準備拖曳元件
-                    startComponentDrag(
-                        componentID: componentID,
-                        startLocation: value.startLocation,
-                        currentLocation: value.location
-                    )
+                let componentID = self.hitTest(value.startLocation)
+                if let componentID = componentID {
+                    if self.viewState.isEditMode {
+                        self.startComponentDrag(
+                            componentID: componentID,
+                            startLocation: value.startLocation,
+                            currentLocation: value.location
+                        )
+                    } else {
+                        self.handleComponentTap(componentID)
+                        self.startViewPan(startLocation: value.startLocation)
+                    }
                 } else {
-                    // 點擊空白區域或非編輯模式下點擊元件，均準備平移視圖
-                    startViewPan(startLocation: value.startLocation)
+                    self.startViewPan(startLocation: value.startLocation)
                 }
             }
             .onEnded { value in
-                // 完成拖曳或平移
+                let dragDistance = sqrt(
+                    pow(value.translation.width, 2) +
+                    pow(value.translation.height, 2)
+                )
+                
                 if gestureState.isDragging {
-                    finalizeComponentDrag()
+                    self.finalizeComponentDrag()
                 } else if gestureState.isPanning {
-                    finalizeViewPan()
+                    self.finalizeViewPan()
+                    if dragDistance < 3 && self.hitTest(value.startLocation) == nil {
+                        self.layoutManager.clearSelection()
+                        self.showingComponentDetails = false
+                        self.selectedComponentID = nil
+                        self.showFeedback("清除選擇", false)
+                    }
                 }
                 
-                // 重置狀態
                 gestureState.draggedComponentID = nil
                 gestureState.dragStartLocation = nil
                 gestureState.dragCurrentLocation = nil
@@ -62,7 +90,13 @@ extension ICLayoutViewModernized {
                 gestureState.isPanning = false
             }
         
-        // 2. 縮放手勢
+        // 使用 ExclusiveGesture 將 tapGesture 優先於 dragGesture
+        let exclusiveGesture = tapGesture.exclusively(before: dragGesture)
+        
+        // 將 exclusiveGesture 與位置追蹤手勢結合
+        let primaryGesture = exclusiveGesture.simultaneously(with: positionTrackingGesture)
+        
+        // 縮放手勢
         let zoomGesture = MagnificationGesture(minimumScaleDelta: 0.01)
             .onChanged { value in
                 self.handleScaleChange(value)
@@ -73,37 +107,12 @@ extension ICLayoutViewModernized {
                 self.showFeedback("縮放: \(Int(gestureState.scale * 100))%", true)
             }
         
-        // 3. 旋轉手勢 (用於編輯模式下旋轉元件)
-        let rotationGesture = RotationGesture()
-            .onChanged { angle in
-                // 僅在編輯模式且有選中元件時啟用
-                guard viewState.isEditMode && !layoutManager.selectedComponents.isEmpty else {
-                    return
-                }
-                
-                if !gestureState.isRotating {
-                    self.startComponentRotation(initialAngle: angle)
-                }
-                
-                // 計算旋轉變化
-                let rotationDelta = angle - gestureState.rotationStartAngle
-                
-                // 應用旋轉到所有選中的PAD
-                for padID in layoutManager.selectedComponents.filter({ layoutManager.pads[$0] != nil }) {
-                    self.applyComponentRotation(to: padID, delta: rotationDelta)
-                }
-            }
-            .onEnded { _ in
-                if gestureState.isRotating {
-                    self.finalizeRotation()
-                }
-            }
         
-        // 組合所有手勢
-        return dragGesture
+        // 組合其他手勢：先處理 primaryGesture，然後同時結合縮放與旋轉
+        return primaryGesture
             .simultaneously(with: zoomGesture)
-            .simultaneously(with: rotationGesture)
     }
+
     
     // MARK: - 輔助方法
     

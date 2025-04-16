@@ -147,14 +147,29 @@ extension ICLayoutViewModernized {
     
     // MARK: - 座標轉換與碰撞檢測
     
+    /// 座標轉換: 螢幕座標到內容座標
+    /// - Parameter screenPoint: 螢幕座標點
+    /// - Returns: 對應的內容座標點
     func screenToContentCoordinate(screenPoint: CGPoint) -> CGPoint {
-        return CGPoint(
+        // 轉換公式: (螢幕座標 - 偏移) / 縮放比例 = 內容座標
+        let contentPoint = CGPoint(
             x: (screenPoint.x - gestureState.offset.width) / gestureState.scale,
             y: (screenPoint.y - gestureState.offset.height) / gestureState.scale
         )
+        
+        // 調試輸出 (僅在調試模式)
+        if showDebugInfo {
+            print("📐 座標轉換: 螢幕(\(Int(screenPoint.x)), \(Int(screenPoint.y))) → 內容(\(Int(contentPoint.x)), \(Int(contentPoint.y)))")
+        }
+        
+        return contentPoint
     }
     
+    /// 座標轉換: 內容座標到螢幕座標
+    /// - Parameter contentPoint: 內容座標點
+    /// - Returns: 對應的螢幕座標點
     func contentToScreenCoordinate(contentPoint: CGPoint) -> CGPoint {
+        // 轉換公式: 內容座標 * 縮放比例 + 偏移 = 螢幕座標
         return CGPoint(
             x: contentPoint.x * gestureState.scale + gestureState.offset.width,
             y: contentPoint.y * gestureState.scale + gestureState.offset.height

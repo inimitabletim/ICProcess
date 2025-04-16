@@ -57,38 +57,16 @@ extension ICLayoutViewModernized {
             }
             
             // 整合了統一手勢系統的內容層
-//            contentLayer
-//                .scaleEffect(gestureState.scale)
-//                .offset(gestureState.offset)
-//                .contentShape(Rectangle())
-//                .onTapGesture { location in
-//                    // 純粹處理點擊事件
-//                    stableContentTap(at: location)
-//                }
-//                .gesture(configureUnifiedGestures()) // 使用統一手勢系統
-            
             contentLayer
                 .scaleEffect(gestureState.scale)
                 .offset(gestureState.offset)
                 .contentShape(Rectangle())
-                .gesture(
-                    // 使用最小距離為 0 的拖曳手勢模擬點擊
-                    DragGesture(minimumDistance: 0)
-                        .onEnded { value in
-                            // 如果幾乎沒有移動，視為點擊
-                            let dragDistance = sqrt(
-                                pow(value.translation.width, 2) +
-                                pow(value.translation.height, 2)
-                            )
+                .onTapGesture { location in
+                    // 純粹處理點擊事件
+                    stableContentTap(at: location)
+                }
+                .gesture(configureUnifiedGestures()) // 使用統一手勢系統
                             
-                            if dragDistance < 3 {
-                                // 處理點擊事件
-                                stableContentTap(at: value.location)
-                            }
-                        }
-                        .exclusively(before: configureUnifiedGestures())
-                )
-                
             // 📝 添加IC黑色邊框
             if viewState.showICBoundary {
                 ICBoundaryView(

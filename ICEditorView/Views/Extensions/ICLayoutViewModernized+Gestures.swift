@@ -91,23 +91,23 @@ extension ICLayoutViewModernized {
             }
         
         // 4. 旋轉手勢 - 處理元件旋轉
-        let rotationGesture = RotationGesture()
-            .onChanged { angle in
-                // 只有在編輯模式且有選中元件時才處理旋轉
-                if (self.viewState.isEditMode || self.viewState.selectedTool == .select) &&
-                   !self.layoutManager.selectedComponents.isEmpty {
-                    self.handleRotation(angle)
-                }
-            }
-            .onEnded { _ in
-                self.finalizeRotation()
-            }
+//        let rotationGesture = RotationGesture()
+//            .onChanged { angle in
+//                // 只有在編輯模式且有選中元件時才處理旋轉
+//                if (self.viewState.isEditMode || self.viewState.selectedTool == .select) &&
+//                   !self.layoutManager.selectedComponents.isEmpty {
+//                    self.handleRotation(angle)
+//                }
+//            }
+//            .onEnded { _ in
+//                self.finalizeRotation()
+//            }
         
         // 組合所有手勢
         return dragGesture
-            .simultaneously(with:
-                magnificationGesture.simultaneously(with: rotationGesture)
-            )
+//            .simultaneously(with:
+//                magnificationGesture.simultaneously(with: rotationGesture)
+//            )
     }
     
     // MARK: - 簡化手勢處理函數
@@ -264,6 +264,10 @@ extension ICLayoutViewModernized {
     
     /// 處理旋轉操作
     private func handleRotation(_ angle: Angle) {
+        
+        // 完全禁用此方法，無論是否處於編輯模式都不執行旋轉
+        return  // 添加此行，直接返回不執行任何操作
+        
         // 僅在編輯模式且有元件被選中時啟用
         guard viewState.isEditMode && !layoutManager.selectedComponents.isEmpty else {
             return
@@ -373,6 +377,13 @@ extension ICLayoutViewModernized {
             // 或者移動單個元件
             else if let componentID = gestureState.draggedComponentID {
                 updateSingleComponentPosition(componentID: componentID)
+            }
+            
+            // 計算內容座標並更新顯示
+            let contentCoords = screenToContentCoordinate(screenPoint: currentLocation)
+            // 使用 currentPositionText 變數直接更新，或通過發布者通知
+            DispatchQueue.main.async {
+                self.currentPositionText = "X: \(Int(contentCoords.x)), Y: \(Int(contentCoords.y))"
             }
         }
     }

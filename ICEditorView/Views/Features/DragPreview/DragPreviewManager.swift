@@ -20,6 +20,9 @@ class DragPreviewManager: ObservableObject {
     @Published var previewEnabled: Bool = true
     @Published var dragPreviewConfirmed: Bool = false
     
+    // 座標變更發布者 (新增)
+    let positionPublisher = PassthroughSubject<CGPoint, Never>()
+    
     func startDragging(componentID: UUID, position: CGPoint) {
         isDragging = true
         draggedComponentID = componentID
@@ -38,6 +41,8 @@ class DragPreviewManager: ObservableObject {
     
     func updateCurrentPosition(_ position: CGPoint) {
         dragCurrentPosition = position
+        // 發布座標變更事件
+        positionPublisher.send(position)
     }
     
     func promptForConfirmation() {

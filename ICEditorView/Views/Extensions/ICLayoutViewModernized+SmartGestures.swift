@@ -96,25 +96,25 @@ extension ICLayoutViewModernized {
                 showFeedback("縮放: \(Int(gestureState.scale * 100))%", true)
             }
         
-        // 3. 旋轉手勢 - 未在階段一實現，但保留接口
-        let rotationGesture = RotationGesture()
-            .onChanged { angle in
-                // 僅在編輯模式且有選中元件時啟用
-                guard viewState.isEditMode && !layoutManager.selectedComponents.isEmpty else {
-                    return
-                }
-                
-                // 旋轉相關邏輯會在後續階段實現
-            }
-            .onEnded { _ in
-                // 旋轉結束邏輯
-            }
+//        // 3. 旋轉手勢 - 未在階段一實現，但保留接口
+//        let rotationGesture = RotationGesture()
+//            .onChanged { angle in
+//                // 僅在編輯模式且有選中元件時啟用
+//                guard viewState.isEditMode && !layoutManager.selectedComponents.isEmpty else {
+//                    return
+//                }
+//                
+//                // 旋轉相關邏輯會在後續階段實現
+//            }
+//            .onEnded { _ in
+//                // 旋轉結束邏輯
+//            }
         
         // 優先處理拖曳，同時支援縮放和旋轉
         return dragGesture
-            .simultaneously(with:
-                magnificationGesture.simultaneously(with: rotationGesture)
-            )
+//            .simultaneously(with:
+//                magnificationGesture.simultaneously(with: rotationGesture)
+//            )
     }
     
     // MARK: - 意圖持有者類

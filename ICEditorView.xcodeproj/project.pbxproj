@@ -23,9 +23,7 @@
 		4359D5CD2DA525AE00937F6F /* ICLayoutDebugView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4359D59F2DA525AE00937F6F /* ICLayoutDebugView.swift */; };
 		4359D5CE2DA525AE00937F6F /* ICLayoutDeveloperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4359D5A02DA525AE00937F6F /* ICLayoutDeveloperView.swift */; };
 		4359D5CF2DA525AE00937F6F /* ICLayoutMainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4359D5A22DA525AE00937F6F /* ICLayoutMainView.swift */; };
-		4359D5D12DA525AE00937F6F /* ICLayoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4359D5A42DA525AE00937F6F /* ICLayoutView.swift */; };
 		4359D5D22DA525AE00937F6F /* ICLayoutViewModernized.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4359D5A52DA525AE00937F6F /* ICLayoutViewModernized.swift */; };
-		4359D5D32DA525AE00937F6F /* ICLayoutViewOptimized.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4359D5A62DA525AE00937F6F /* ICLayoutViewOptimized.swift */; };
 		4359D5D42DA525AE00937F6F /* ICLayoutViewProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4359D5A72DA525AE00937F6F /* ICLayoutViewProtocol.swift */; };
 		4359D5D52DA525AE00937F6F /* AppModeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4359D5A92DA525AE00937F6F /* AppModeManager.swift */; };
 		4359D5D62DA525AE00937F6F /* CSVParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4359D5AA2DA525AE00937F6F /* CSVParser.swift */; };
@@ -121,9 +119,7 @@
 		4359D59F2DA525AE00937F6F /* ICLayoutDebugView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ICLayoutDebugView.swift; sourceTree = "<group>"; };
 		4359D5A02DA525AE00937F6F /* ICLayoutDeveloperView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ICLayoutDeveloperView.swift; sourceTree = "<group>"; };
 		4359D5A22DA525AE00937F6F /* ICLayoutMainView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ICLayoutMainView.swift; sourceTree = "<group>"; };
-		4359D5A42DA525AE00937F6F /* ICLayoutView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ICLayoutView.swift; sourceTree = "<group>"; };
 		4359D5A52DA525AE00937F6F /* ICLayoutViewModernized.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ICLayoutViewModernized.swift; sourceTree = "<group>"; };
-		4359D5A62DA525AE00937F6F /* ICLayoutViewOptimized.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ICLayoutViewOptimized.swift; sourceTree = "<group>"; };
 		4359D5A72DA525AE00937F6F /* ICLayoutViewProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ICLayoutViewProtocol.swift; sourceTree = "<group>"; };
 		4359D5A92DA525AE00937F6F /* AppModeManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppModeManager.swift; sourceTree = "<group>"; };
 		4359D5AA2DA525AE00937F6F /* CSVParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CSVParser.swift; sourceTree = "<group>"; };
@@ -311,9 +307,7 @@
 				4359D59E2DA525AE00937F6F /* Features */,
 				4359D5A12DA525AE00937F6F /* Screens */,
 				4359D5A22DA525AE00937F6F /* ICLayoutMainView.swift */,
-				4359D5A42DA525AE00937F6F /* ICLayoutView.swift */,
 				4359D5A52DA525AE00937F6F /* ICLayoutViewModernized.swift */,
-				4359D5A62DA525AE00937F6F /* ICLayoutViewOptimized.swift */,
 				4359D5A72DA525AE00937F6F /* ICLayoutViewProtocol.swift */,
 				430F5BCC2DA60A2600D57FFE /* ICLayoutViewModernized_Protocol.swift */,
 			);
@@ -628,11 +622,9 @@
 				4359D5EA2DA525AE00937F6F /* ModelPADDimension.swift in Sources */,
 				4359D5DD2DA525AE00937F6F /* DFProjectType.swift in Sources */,
 				4359D5E32DA525AE00937F6F /* ModelICIOCell.swift in Sources */,
-				4359D5D12DA525AE00937F6F /* ICLayoutView.swift in Sources */,
 				4359D5D52DA525AE00937F6F /* AppModeManager.swift in Sources */,
 				43FBB6392DA6598700D5DE4E /* SimplifiedToolbar.swift in Sources */,
 				4359D5D42DA525AE00937F6F /* ICLayoutViewProtocol.swift in Sources */,
-				4359D5D32DA525AE00937F6F /* ICLayoutViewOptimized.swift in Sources */,
 				4359D5E92DA525AE00937F6F /* ModelPAD.swift in Sources */,
 				4359D5E62DA525AE00937F6F /* ModelICPGCell.swift in Sources */,
 				43FBB63B2DA659E200D5DE4E /* ViewOptionsPanel.swift in Sources */,

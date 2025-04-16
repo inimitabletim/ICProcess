@@ -143,6 +143,31 @@ class ICLayoutManager: ObservableObject {
     func updatePAD(_ pad: ModelPAD) {
         recordHistory()
         pads[pad.id] = pad
+        objectWillChange.send()  // 確保這一行存在
+    }
+    
+    /// 更新PAD旋轉角度
+    /// - Parameters:
+    ///   - padID: PAD的唯一識別碼
+    ///   - angle: 新的旋轉角度（以度為單位，0-360範圍）
+    func updatePADRotation(padID: UUID, angle: Double) {
+        // 確保PAD存在
+        guard var pad = pads[padID] else {
+            print("⚠️ 無法更新旋轉：找不到PAD (ID: \(padID))")
+            return
+        }
+        
+        // 記錄操作歷史
+        recordHistory()
+        
+        // 更新旋轉角度
+        pad.rotatedAngle = angle
+        
+        // 更新PAD
+        pads[padID] = pad
+        
+        // 通知觀察者
+        objectWillChange.send()
     }
     
     func removePAD(id: UUID) {
