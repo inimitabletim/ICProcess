@@ -16,6 +16,7 @@
 		430F5BC72DA6029F00D57FFE /* DragConfirmDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430F5BC62DA6029F00D57FFE /* DragConfirmDialog.swift */; };
 		430F5BC92DA6061D00D57FFE /* ModernToolbarButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430F5BC82DA6061D00D57FFE /* ModernToolbarButton.swift */; };
 		430F5BCD2DA60A2600D57FFE /* ICLayoutViewModernized_Protocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430F5BCC2DA60A2600D57FFE /* ICLayoutViewModernized_Protocol.swift */; };
+		4320C66D2DAF8EB900A2812F /* CoordinateSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4320C66C2DAF8EB900A2812F /* CoordinateSystem.swift */; };
 		4359D5C72DA525AE00937F6F /* ConnectionsLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4359D5922DA525AE00937F6F /* ConnectionsLayer.swift */; };
 		4359D5C92DA525AE00937F6F /* ICLayoutComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4359D5952DA525AE00937F6F /* ICLayoutComponents.swift */; };
 		4359D5CB2DA525AE00937F6F /* PinToPADAssociationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4359D5992DA525AE00937F6F /* PinToPADAssociationView.swift */; };
@@ -112,6 +113,7 @@
 		430F5BC62DA6029F00D57FFE /* DragConfirmDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DragConfirmDialog.swift; sourceTree = "<group>"; };
 		430F5BC82DA6061D00D57FFE /* ModernToolbarButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModernToolbarButton.swift; sourceTree = "<group>"; };
 		430F5BCC2DA60A2600D57FFE /* ICLayoutViewModernized_Protocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ICLayoutViewModernized_Protocol.swift; sourceTree = "<group>"; };
+		4320C66C2DAF8EB900A2812F /* CoordinateSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoordinateSystem.swift; sourceTree = "<group>"; };
 		4359D5922DA525AE00937F6F /* ConnectionsLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionsLayer.swift; sourceTree = "<group>"; };
 		4359D5952DA525AE00937F6F /* ICLayoutComponents.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ICLayoutComponents.swift; sourceTree = "<group>"; };
 		4359D5992DA525AE00937F6F /* PinToPADAssociationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PinToPADAssociationView.swift; sourceTree = "<group>"; };
@@ -320,6 +322,7 @@
 				4359D5A92DA525AE00937F6F /* AppModeManager.swift */,
 				4359D5AA2DA525AE00937F6F /* CSVParser.swift */,
 				4359D5AB2DA525AE00937F6F /* TestDataGenerator.swift */,
+				4320C66C2DAF8EB900A2812F /* CoordinateSystem.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -643,6 +646,7 @@
 				4359D5C72DA525AE00937F6F /* ConnectionsLayer.swift in Sources */,
 				4359D5D72DA525AE00937F6F /* TestDataGenerator.swift in Sources */,
 				4359D5DC2DA525AE00937F6F /* DFPinOutType.swift in Sources */,
+				4320C66D2DAF8EB900A2812F /* CoordinateSystem.swift in Sources */,
 				430F5BC72DA6029F00D57FFE /* DragConfirmDialog.swift in Sources */,
 				4359D5F22DA527FB00937F6F /* ICLayoutViewModernized+Gestures.swift in Sources */,
 				4359D5D22DA525AE00937F6F /* ICLayoutViewModernized.swift in Sources */,

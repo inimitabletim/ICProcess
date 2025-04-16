@@ -176,45 +176,44 @@ extension ICLayoutViewModernized {
         )
     }
     
+    // 統一的元件碰撞檢測
     func hitTest(_ location: CGPoint) -> UUID? {
         // 轉換到內容座標系
-        let adjustedLocation = screenToContentCoordinate(screenPoint: location)
+        let contentLocation = gestureState.screenToContent(location)
         
-        // 優先檢查Pin (因為通常較小且在頂層)
+        // 優先檢查 Pin (因為通常較小且在頂層)
         for (pinID, pin) in layoutManager.pins {
-            if let position = getPinPosition(for: pin) {
-                // 計算點擊位置與Pin中心的距離
-                let distance = distanceBetween(position, adjustedLocation)
+            if let position = pin.getPosition(pads: layoutManager.pads) {
+                // 計算點擊位置與 Pin 中心的距離
+                let distance = position.distance(to: contentLocation)
                 
-                // 使用較寬鬆的檢測範圍以提升用戶體驗
-                if distance < 15 {
+                // 使用寬鬆的檢測半徑
+                let touchRadius: CGFloat = iPadMode ? 22.0 : 15.0
+                if distance < Double(touchRadius) {
                     return pinID
                 }
             }
         }
         
-        // 再檢查PAD (因為通常較大且在底層)
+        // 再檢查 PAD (因為通常較大且在底層)
         for (padID, pad) in layoutManager.pads {
-            // 獲取PAD的尺寸
+            // 獲取 PAD 的尺寸
             let dimension = pad.padDimensionID != nil ?
                 layoutManager.padDimensions[pad.padDimensionID!] : nil
-            let width = CGFloat(dimension?.width ?? 50)
-            let height = CGFloat(dimension?.height ?? 30)
+            let width = Double(dimension?.width ?? 50)
+            let height = Double(dimension?.height ?? 30)
             
-            // 擴大檢測範圍
-            let expandedWidth = width + 10
-            let expandedHeight = height + 10
-            
-            // 考慮PAD的旋轉角度
-            let inRect = pointInRotatedRect(
-                point: adjustedLocation,
-                rectCenter: CGPoint(x: CGFloat(pad.centerLocateX), y: CGFloat(pad.centerLocateY)),
-                width: expandedWidth,
-                height: expandedHeight,
-                rotation: .degrees(pad.rotatedAngle)
+            // 使用統一的旋轉矩形碰撞檢測
+            let isHit = CoordinateSystem.enhancedHitTest(
+                point: contentLocation,
+                componentCenter: pad.position,
+                width: width,
+                height: height,
+                rotationDegrees: pad.rotatedAngle,
+                tolerance: 10.0
             )
             
-            if inRect {
+            if isHit {
                 return padID
             }
         }
@@ -281,32 +280,7 @@ extension ICLayoutViewModernized {
         showingImportAlert = true
     }
     
-    // MARK: - 數據處理
-    
-    func updateLayoutManagerFromViewModel() {
-        // 將ViewModel中的數據轉換為LayoutManager需要的格式
-        var pinDict: [UUID: ModelPin] = [:]
-        var padDict: [UUID: ModelPAD] = [:]
-        
-        // 轉換Pin數據
-        for pin in viewModel.pins {
-            pinDict[pin.id] = pin
-        }
-        
-        // 轉換PAD數據
-        for pad in viewModel.pads {
-            padDict[pad.id] = pad
-        }
-        
-        // 更新LayoutManager數據
-        layoutManager.pins = pinDict
-        layoutManager.pads = padDict
-        layoutManager.padDimensions = viewModel.padDimensions
-        
-        // 記錄歷史
-        layoutManager.recordHistory()
-    }
-    
+   
     func getPinPosition(for pin: ModelPin) -> CGPoint? {
         // 如果Pin關聯了PAD，位置就是PAD的中心點
         if let padID = pin.padIDs.first, let pad = layoutManager.pads[padID] {

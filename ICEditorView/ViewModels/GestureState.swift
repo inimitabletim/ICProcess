@@ -51,6 +51,11 @@ public class GestureState: ObservableObject {
     // 調試信息
     @Published var debugInfo: String = ""
     
+    @Published var transformation = CoordinateSystem.ViewTransformation(
+        scale: 1.0,
+        offset: (x: 0.0, y: 0.0)
+    )
+    
     var draggedComponentID: UUID? = nil
     var isHovering: Bool = false
     
@@ -93,6 +98,29 @@ public class GestureState: ObservableObject {
         resetViewState()
         scale = 1.0
         lastScale = 1.0
+    }
+    
+    // 更新視圖縮放時同步更新座標轉換器
+    func updateScale(_ newScale: CGFloat) {
+        scale = newScale
+        transformation.scale = Double(newScale)
+    }
+    
+    // 更新視圖偏移時同步更新座標轉換器
+    func updateOffset(_ newOffset: CGSize) {
+        offset = newOffset
+        transformation.offset = (Double(newOffset.width), Double(newOffset.height))
+    }
+    
+    // 螢幕座標轉內容座標 - 使用統一轉換器
+    func screenToContent(_ point: CGPoint) -> CoordinateSystem.ICPoint {
+        let icPoint = CoordinateSystem.ICPoint(point)
+        return transformation.screenToContent(icPoint)
+    }
+    
+    // 內容座標轉螢幕座標 - 使用統一轉換器
+    func contentToScreen(_ point: CoordinateSystem.ICPoint) -> CGPoint {
+        return transformation.contentToScreen(point).toCGPoint()
     }
 }
 

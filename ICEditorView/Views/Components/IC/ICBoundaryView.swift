@@ -28,71 +28,42 @@ struct ICBoundaryView: View {
             return CGRect(origin: .zero, size: fixedBoundarySize)
         }
         
-        // 找出所有 PAD 的極值座標
-        var minX: CGFloat = .infinity
-        var minY: CGFloat = .infinity
-        var maxX: CGFloat = -.infinity
-        var maxY: CGFloat = -.infinity
+        // 使用統一座標系統計算所有 PAD 的邊界
+        var allPadBounds: [(minX: Double, minY: Double, maxX: Double, maxY: Double)] = []
         
-        // 考慮旋轉角度的PAD邊界計算
         for pad in layoutManager.pads.values {
-            // 取得PAD尺寸資訊
-            let padWidth: CGFloat
-            let padHeight: CGFloat
+            // 獲取 PAD 的尺寸
+            let dimension = pad.padDimensionID != nil ? layoutManager.padDimensions[pad.padDimensionID!] : nil
+            let width = Double(dimension?.width ?? 50)
+            let height = Double(dimension?.height ?? 30)
             
-            if let dimensionID = pad.padDimensionID, let dimension = layoutManager.padDimensions[dimensionID] {
-                padWidth = CGFloat(dimension.width)
-                padHeight = CGFloat(dimension.height)
-            } else {
-                padWidth = 50
-                padHeight = 30
-            }
+            // 計算旋轉後的邊界
+            let bounds = CoordinateSystem.getRotatedRectBounds(
+                center: pad.position,
+                width: width,
+                height: height,
+                rotationDegrees: pad.rotatedAngle
+            )
             
-            // 計算PAD四個角的位置(考慮旋轉)
-            let center = CGPoint(x: CGFloat(pad.centerLocateX), y: CGFloat(pad.centerLocateY))
-            let halfWidth = padWidth / 2
-            let halfHeight = padHeight / 2
-            
-            // 計算四個角落的點
-            let topLeft = CGPoint(x: center.x - halfWidth, y: center.y - halfHeight)
-            let topRight = CGPoint(x: center.x + halfWidth, y: center.y - halfHeight)
-            let bottomLeft = CGPoint(x: center.x - halfWidth, y: center.y + halfHeight)
-            let bottomRight = CGPoint(x: center.x + halfWidth, y: center.y + halfHeight)
-            
-            // 如果有旋轉角度，旋轉這些點
-            if pad.rotatedAngle != 0 {
-                let rotatedTL = rotatePoint(topLeft, around: center, angle: pad.rotatedAngle)
-                let rotatedTR = rotatePoint(topRight, around: center, angle: pad.rotatedAngle)
-                let rotatedBL = rotatePoint(bottomLeft, around: center, angle: pad.rotatedAngle)
-                let rotatedBR = rotatePoint(bottomRight, around: center, angle: pad.rotatedAngle)
-                
-                // 找出旋轉後的極值
-                minX = min(minX, rotatedTL.x, rotatedTR.x, rotatedBL.x, rotatedBR.x)
-                minY = min(minY, rotatedTL.y, rotatedTR.y, rotatedBL.y, rotatedBR.y)
-                maxX = max(maxX, rotatedTL.x, rotatedTR.x, rotatedBL.x, rotatedBR.x)
-                maxY = max(maxY, rotatedTL.y, rotatedTR.y, rotatedBL.y, rotatedBR.y)
-            } else {
-                // 不旋轉，直接找極值
-                minX = min(minX, center.x - halfWidth)
-                minY = min(minY, center.y - halfHeight)
-                maxX = max(maxX, center.x + halfWidth)
-                maxY = max(maxY, center.y + halfHeight)
-            }
+            allPadBounds.append(bounds)
         }
         
-        // 添加額外的邊距
-        minX -= paddingInset
-        minY -= paddingInset
-        maxX += paddingInset
-        maxY += paddingInset
+        // 計算所有 PAD 邊界的極值
+        let minX = allPadBounds.map { $0.minX }.min() ?? 0
+        let minY = allPadBounds.map { $0.minY }.min() ?? 0
+        let maxX = allPadBounds.map { $0.maxX }.max() ?? 0
+        let maxY = allPadBounds.map { $0.maxY }.max() ?? 0
         
+        // 添加邊距
+        let padding: Double = Double(paddingInset)
         return CGRect(
-            x: minX,
-            y: minY,
-            width: maxX - minX,
-            height: maxY - minY
+            x: minX - padding,
+            y: minY - padding,
+            width: maxX - minX + padding * 2,
+            height: maxY - minY + padding * 2
         )
     }
+
     
     // MARK: - 視圖主體
     var body: some View {

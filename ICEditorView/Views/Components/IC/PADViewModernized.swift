@@ -5,11 +5,6 @@
 //  Created by TimChi on 2025/4/8.
 //
 
-//
-//  PADViewModernized.swift
-//  ICEditorView
-//
-
 import SwiftUI
 
 /// 現代化的PAD視圖元件，添加45度增量旋轉控制點

@@ -19,6 +19,10 @@ struct ICLayoutViewModernized: View, UserModeViewProtocol {
     @StateObject var gestureState = GestureState()
     @StateObject var dragPreviewManager = DragPreviewManager()
     
+    @State var showingImportAlert = false
+    @State var importAlertMessage = ""
+    @State var importAlertIsSuccess = false
+    
     // MARK: - 界面狀態
     @State var showModeFeedback = false
     @State var feedbackMessage = ""
@@ -33,13 +37,7 @@ struct ICLayoutViewModernized: View, UserModeViewProtocol {
     // MARK: - 元件詳情狀態
     @State var showingComponentDetails: Bool = false
     @State var selectedComponentID: UUID? = nil
-    
-    // MARK: - CSV匯入狀態
-    @State var isImportingCSV = false
-    @State var showingImportAlert = false
-    @State var importAlertMessage = ""
-    @State var importAlertIsSuccess = false
-    
+        
     // MARK: - 其他視圖狀態
     @State var showDebugInfo: Bool = false
     @State var showingBoundarySettings: Bool = false
@@ -51,12 +49,8 @@ struct ICLayoutViewModernized: View, UserModeViewProtocol {
     @State var showSidePanel: Bool = false
     @State var sidePanelTab: Int = 0
     @State private var floatingPanelExpanded: Bool = false
-    @State var showFileMenu: Bool = false
-    @State var fileMenuPosition: CGPoint = .zero
     @State private var showViewOptionsMenu: Bool = false
     @State private var viewOptionsPosition: CGPoint = .zero
-    
-    @State var currentPositionText: String = "X: -, Y: -"
     
     // MARK: - 環境屬性
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -157,15 +151,7 @@ struct ICLayoutViewModernized: View, UserModeViewProtocol {
                             .position(x: geometry.size.width - 140, y: geometry.size.height / 2)
                             .zIndex(20)
                         }
-                        
-                        // 檔案選單
-                        if showFileMenu {
-                            FileMenuView(onAction: handleFileAction)
-                                .position(fileMenuPosition)
-                                .transition(.scale.combined(with: .opacity))
-                                .zIndex(30)
-                        }
-                        
+                                                
                         // 懸浮工具面板 - 傳入約束函數
                         FloatingToolPanel(
                             position: $floatingToolPosition,
@@ -191,16 +177,6 @@ struct ICLayoutViewModernized: View, UserModeViewProtocol {
                                     .foregroundColor(.orange)
                                 
                                 Text("已選: \(layoutManager.selectedComponents.count)")
-                                    .font(.system(size: 14, weight: .medium))
-                            }
-                            
-                            // 當前座標
-                            HStack(spacing: 8) {
-                                Image(systemName: "location")
-                                    .font(.system(size: 12))
-                                    .foregroundColor(.blue)
-                                
-                                Text(currentPositionText)
                                     .font(.system(size: 14, weight: .medium))
                             }
                         }
@@ -239,13 +215,6 @@ struct ICLayoutViewModernized: View, UserModeViewProtocol {
                     x: geometry.size.width / 2,
                     y: geometry.size.height - panelHeight - bottomSafeArea - additionalPadding
                 )
-                
-                // 新增：訂閱拖曳座標更新
-                dragPreviewManager.positionPublisher
-                    .sink { [self] position in
-                        self.currentPositionText = "X: \(Int(position.x)), Y: \(Int(position.y))"
-                    }
-                    .store(in: &SubscriptionManager.shared.subscriptions)
             }
             // 📝 處理屏幕旋轉或尺寸變化
             .onChange(of: geometry.size) { newSize in
@@ -258,13 +227,6 @@ struct ICLayoutViewModernized: View, UserModeViewProtocol {
                     x: newSize.width / 2,
                     y: newSize.height - panelHeight - bottomSafeArea - additionalPadding
                 )
-            }
-            .fileImporter(
-                isPresented: $isImportingCSV,
-                allowedContentTypes: [.commaSeparatedText],
-                allowsMultipleSelection: false
-            ) { result in
-                handleCSVImport(result: result)
             }
         }
     }
@@ -305,35 +267,6 @@ struct ICLayoutViewModernized: View, UserModeViewProtocol {
         let constrainedY = min(maxY, max(minY, position.y))
         
         return CGPoint(x: constrainedX, y: constrainedY)
-    }
-
-    // MARK: - 處理檔案操作
-    private func handleFileAction(_ action: FileMenuView.FileAction) {
-        switch action {
-        case .importCSV:
-            isImportingCSV = true
-            showFileMenu = false
-            
-        case .exportCSV:
-            // 處理匯出操作
-            showFeedback("匯出 CSV 功能尚未實現", true)
-            showFileMenu = false
-            
-        case .saveLayout:
-            // 處理儲存佈局操作
-            showFeedback("儲存佈局功能尚未實現", true)
-            showFileMenu = false
-            
-        case .loadLayout:
-            // 處理載入佈局操作
-            showFeedback("載入佈局功能尚未實現", true)
-            showFileMenu = false
-            
-        case .dismiss:
-            withAnimation {
-                showFileMenu = false
-            }
-        }
     }
 
     // MARK: - 居中顯示選中元件

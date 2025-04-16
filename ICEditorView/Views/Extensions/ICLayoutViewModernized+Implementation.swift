@@ -237,13 +237,6 @@ extension ICLayoutViewModernized {
             handleToolbarToolChange()
             showFeedback("已切換到縮放工具", true)
             
-        case .showFileMenu:
-            // 計算檔案選單位置
-            fileMenuPosition = CGPoint(x: 130, y: 130)
-            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                showFileMenu = true
-            }
-            
         case .showEditMenu:
             // 目前階段一不實現此功能
             showFeedback("編輯選單功能尚未實現", true)

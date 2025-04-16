@@ -76,69 +76,7 @@ extension ICLayoutViewModernized {
         
         showFeedback("已選擇元件", true)
     }
-    
-    // MARK: - CSV 匯入處理
-    
-    func handleCSVImport(result: Result<[URL], Error>) {
-        do {
-            // 獲取選擇的檔案URL
-            let selectedFiles = try result.get()
-            
-            // 確保選擇了檔案
-            guard let selectedFile = selectedFiles.first else {
-                showImportAlert(success: false, message: "未選擇檔案")
-                return
-            }
-            
-            // 取得檔案存取權限
-            if selectedFile.startAccessingSecurityScopedResource() {
-                defer { selectedFile.stopAccessingSecurityScopedResource() }
-                
-                // 使用增強版匯入功能處理檔案
-                let importResult = viewModel.loadFromCSVWithValidation(url: selectedFile)
-                
-                // 如果成功，更新layoutManager中的數據
-                if importResult.success {
-                    handleSuccessfulImport(importResult)
-                } else {
-                    // 顯示失敗信息
-                    showImportAlert(success: false, message: importResult.message)
-                    showFeedback("匯入失敗", true)
-                }
-            } else {
-                showImportAlert(success: false, message: "無法存取選擇的檔案")
-            }
-        } catch {
-            showImportAlert(success: false, message: "檔案選擇錯誤: \(error.localizedDescription)")
-        }
-    }
-    
-    private func handleSuccessfulImport(_ importResult: (success: Bool, message: String)) {
-        // 同步更新layoutManager數據
-        updateLayoutManagerFromViewModel()
         
-        // 執行layoutManager的數據一致性檢查
-        let managerValidationResult = layoutManager.validateAndCleanData()
-        
-        // 重置視圖
-        withAnimation(.spring()) {
-            // ✅ 確保導入後更新視圖狀態
-            viewState.useFixedICBoundary = false  // 切換到動態邊界模式
-            viewState.resetView()
-            resetView()
-        }
-        
-        // 增加一致性檢查報告
-        var successMessage = importResult.message
-        if managerValidationResult.totalIssues > 0 {
-            successMessage += "\n額外修復了 \(managerValidationResult.totalIssues) 個數據一致性問題"
-        }
-        
-        // 顯示結果提示
-        showImportAlert(success: true, message: successMessage)
-        showFeedback("匯入成功，數據已驗證", true)
-    }
-    
     // MARK: - 關聯操作
     
     // 快速為選中元件建立關聯

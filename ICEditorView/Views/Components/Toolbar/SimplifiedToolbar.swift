@@ -20,7 +20,6 @@ struct SimplifiedToolbar: View {
         case selectTool
         case panTool
         case zoomTool
-        case showFileMenu
         case showEditMenu
         case showViewOptions
         case toggleExtendedTools
@@ -31,18 +30,6 @@ struct SimplifiedToolbar: View {
         HStack(spacing: 8) {
             // 左側：基本工具
             HStack(spacing: 16) {
-                // 檔案選單按鈕
-                BigToolbarButton(
-                    icon: "doc",
-                    label: "檔案",
-                    action: { onAction(.showFileMenu) }
-                )
-                
-                // 分隔線
-                Rectangle()
-                    .fill(Color.gray.opacity(0.3))
-                    .frame(width: 1, height: 36)
-                
                 // 主要工具模式
                 BigToolbarButton(
                     icon: "hand.point.up.fill",

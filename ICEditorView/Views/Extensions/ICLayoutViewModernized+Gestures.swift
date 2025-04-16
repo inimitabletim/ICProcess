@@ -378,13 +378,6 @@ extension ICLayoutViewModernized {
             else if let componentID = gestureState.draggedComponentID {
                 updateSingleComponentPosition(componentID: componentID)
             }
-            
-            // 計算內容座標並更新顯示
-            let contentCoords = screenToContentCoordinate(screenPoint: currentLocation)
-            // 使用 currentPositionText 變數直接更新，或通過發布者通知
-            DispatchQueue.main.async {
-                self.currentPositionText = "X: \(Int(contentCoords.x)), Y: \(Int(contentCoords.y))"
-            }
         }
     }
     

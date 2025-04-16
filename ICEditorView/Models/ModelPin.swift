@@ -33,8 +33,9 @@ struct ModelPin: ICComponent, Hashable {
     }
     
     // 獲取Pin位置 (如果有關聯的PAD)
-    func getPosition(pads: [UUID: ModelPAD]) -> Point? {
-        // 如果Pin關聯了PAD，位置就是PAD的中心點
+    // 獲取 Pin 位置，統一返回 ICPoint
+    func getPosition(pads: [UUID: ModelPAD]) -> CoordinateSystem.ICPoint? {
+        // 如果 Pin 關聯了 PAD，位置就是 PAD 的中心點
         if let padID = padIDs.first, let pad = pads[padID] {
             return pad.position
         }
